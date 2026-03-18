@@ -1,332 +1,396 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>🏀 March Madness 2026</title>
-<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-:root{--orange:#FF6B35;--orange-d:#e55a25;--blue:#1E90FF;--dark:#1A1A2E;--bg:#FAFAF7;--card:#fff;--green:#2ECC71;--red:#E74C3C;--muted:#B0B0B0;--yellow:#F7C948;--border:#EBEBEB;--text:#1A1A2E;--tm:#888;}
-html,body{height:100%;overflow:hidden;background:var(--bg);font-family:'Nunito',sans-serif;color:var(--text)}
-.app{display:flex;flex-direction:column;height:100vh;max-width:500px;margin:0 auto;background:var(--bg);position:relative;overflow:hidden;box-shadow:0 0 60px rgba(0,0,0,0.12)}
-.hdr{background:var(--dark);padding:12px 16px 10px;flex-shrink:0;position:relative;overflow:hidden}
-.hdr::before{content:'';position:absolute;top:-30px;right:-30px;width:120px;height:120px;border-radius:50%;background:rgba(255,107,53,0.12)}
-.hdr::after{content:'';position:absolute;bottom:-20px;left:40px;width:80px;height:80px;border-radius:50%;background:rgba(30,144,255,0.08)}
-.hdr-top{display:flex;align-items:center;justify-content:space-between;position:relative;z-index:1}
-.hdr-title{font-family:'Fredoka One',cursive;font-size:22px;color:var(--orange)}
-.hdr-sub{font-size:11px;color:rgba(255,255,255,0.4);margin-top:1px}
-.lock-badge{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:20px;padding:3px 9px;font-size:10px;color:rgba(255,255,255,0.6);font-weight:700}
-.cd-strip{background:rgba(255,107,53,0.12);border:1px solid rgba(255,107,53,0.25);border-radius:10px;padding:6px 12px;margin-top:8px;display:flex;align-items:center;justify-content:space-between;position:relative;z-index:1}
-.cd-label{font-size:10px;color:rgba(255,107,53,0.8);font-weight:800;text-transform:uppercase;letter-spacing:.8px}
-.cd-time{font-family:'Fredoka One',cursive;font-size:16px;color:#fff;letter-spacing:1px}
-.cd-status{font-size:10px;color:rgba(255,255,255,0.4)}
-.screen{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none}
-.screen::-webkit-scrollbar{display:none}
-.panel{display:none;min-height:100%}
-.panel.active{display:block}
-.nav{display:flex;background:var(--card);border-top:1px solid var(--border);flex-shrink:0;padding-bottom:env(safe-area-inset-bottom,0)}
-.nav-btn{flex:1;padding:10px 4px 8px;font-size:10px;font-weight:800;color:var(--muted);border:none;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;transition:color .2s;font-family:'Nunito',sans-serif;text-transform:uppercase;letter-spacing:.4px}
-.nav-btn.active{color:var(--orange)}
-.nav-btn .ni{font-size:20px;line-height:1}
-.bracket-toolbar{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--bg);border-bottom:1px solid var(--border);flex-shrink:0}
-.view-toggle{display:flex;background:#eee;border-radius:8px;padding:2px;gap:2px;flex-shrink:0}
-.vt-btn{padding:5px 10px;border-radius:6px;font-size:11px;font-weight:800;border:none;background:none;cursor:pointer;color:#999;font-family:'Nunito',sans-serif;white-space:nowrap;transition:all .15s}
-.vt-btn.active{background:var(--card);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.1)}
-.ai-wrap{position:relative;flex:1}
-.ai-btn{width:100%;padding:6px 10px;border-radius:8px;border:1.5px solid var(--border);background:var(--card);font-family:'Nunito',sans-serif;font-size:12px;font-weight:700;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px}
-.ai-label{flex:1;overflow:hidden;text-overflow:ellipsis;text-align:left}
-.ai-arrow{font-size:10px;color:var(--muted);flex-shrink:0;transition:transform .2s}
-.ai-btn.open .ai-arrow{transform:rotate(180deg)}
-.ai-menu{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--card);border:1.5px solid var(--border);border-radius:10px;overflow:hidden;z-index:100;box-shadow:0 4px 20px rgba(0,0,0,.12)}
-.ai-item{padding:10px 12px;cursor:pointer;display:flex;align-items:center;gap:8px;border-bottom:1px solid #f5f5f5;transition:background .1s}
-.ai-item:last-of-type{border-bottom:none}
-.ai-item:active,.ai-item:hover{background:#fafafa}
-.si{font-size:16px;width:20px;text-align:center;flex-shrink:0}
-.sn{font-size:12px;font-weight:800;color:var(--text)}
-.sd{font-size:10px;color:var(--tm);margin-top:1px}
-.ai-apply{width:calc(100% - 16px);margin:8px;padding:10px;background:var(--orange);color:#fff;border:none;border-radius:8px;font-family:'Fredoka One',cursive;font-size:15px;cursor:pointer}
-.ai-apply:disabled{background:#ddd;color:#aaa;cursor:default}
-.prog-wrap{height:4px;background:#eee;flex-shrink:0}
-.prog-fill{height:100%;background:var(--orange);transition:width .5s}
-.region-list{padding:10px 12px;display:flex;flex-direction:column;gap:8px}
-.region-card{background:var(--card);border-radius:14px;overflow:hidden;border:1.5px solid var(--border);box-shadow:0 1px 6px rgba(0,0,0,.04)}
-.region-card.expanded .rc-body{display:block}
-.rc-head{display:flex;align-items:center;padding:12px 14px;cursor:pointer;gap:10px;user-select:none}
-.rc-color{width:10px;height:10px;border-radius:50%;flex-shrink:0}
-.rc-name{font-family:'Fredoka One',cursive;font-size:16px;flex:1}
-.rc-meta{font-size:11px;color:var(--tm);font-weight:700}
-.rc-arrow{font-size:12px;color:var(--muted);transition:transform .25s;flex-shrink:0}
-.region-card.expanded .rc-arrow{transform:rotate(180deg)}
-.rc-body{display:none;border-top:1px solid var(--border)}
-.rc-tabs{display:flex;gap:4px;padding:8px 10px 6px;overflow-x:auto;scrollbar-width:none;background:#fafafa;border-bottom:1px solid var(--border)}
-.rc-tabs::-webkit-scrollbar{display:none}
-.rc-tab{white-space:nowrap;padding:4px 10px;border-radius:16px;font-size:10px;font-weight:800;border:1.5px solid var(--border);background:none;cursor:pointer;color:#999;font-family:'Nunito',sans-serif;transition:all .15s}
-.rc-tab.active{background:var(--orange);color:#fff;border-color:var(--orange)}
-.rc-games{padding:8px 10px;display:flex;flex-direction:column;gap:6px}
-.rc-game{background:var(--bg);border-radius:10px;overflow:hidden;border:1px solid var(--border)}
-.rc-ghdr{background:#f0f0f0;padding:3px 10px;font-size:9px;font-weight:800;color:#999;text-transform:uppercase;letter-spacing:.6px;display:flex;justify-content:space-between}
-.rc-pts{color:var(--orange)}
-.rc-team{display:flex;align-items:center;gap:8px;padding:9px 10px;cursor:pointer;transition:background .12s;border-bottom:1px solid #f5f5f5}
-.rc-team:last-child{border-bottom:none}
-.rc-team:active{background:rgba(255,107,53,.05)}
-.rc-team.picked{background:rgba(255,107,53,.07)}
-.rc-team.correct{background:rgba(46,204,113,.08)}
-.rc-team.wrong{background:rgba(231,76,60,.05)}
-.rc-team.locked{cursor:default}
-.rc-seed{width:20px;height:20px;border-radius:5px;background:#ebebeb;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#666;flex-shrink:0}
-.rc-team.picked .rc-seed{background:rgba(255,107,53,.18);color:var(--orange)}
-.rc-team.correct .rc-seed{background:rgba(46,204,113,.2);color:#1a9e52}
-.rc-team.wrong .rc-seed{background:rgba(231,76,60,.12);color:#c0392b}
-.rc-tname{flex:1;font-size:13px;font-weight:700;color:var(--text)}
-.rc-tname.tbd{color:var(--muted);font-style:italic;font-weight:400;font-size:12px}
-.rc-dot{width:18px;height:18px;border-radius:50%;border:2px solid #ddd;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0}
-.rc-dot.picked{background:var(--orange);border-color:var(--orange)}
-.rc-dot.correct{background:var(--green);border-color:var(--green)}
-.rc-dot.wrong{background:var(--red);border-color:var(--red)}
-.ff-block{margin:0 12px 12px;background:var(--dark);border-radius:14px;overflow:hidden;border:1px solid rgba(255,107,53,.3)}
-.ff-hdr{padding:8px 14px;font-family:'Fredoka One',cursive;font-size:14px;color:var(--orange)}
-.ff-games{padding:0 10px 10px;display:flex;flex-direction:column;gap:6px}
-.sbw{overflow-x:auto;overflow-y:visible;padding:12px 0 16px;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
-.sb{display:flex;min-width:1320px;padding:0 12px}
-.sb-sec{display:flex}
-.sb-col{display:flex;flex-direction:column;width:130px;flex-shrink:0}
-.sb-chdr{font-family:'Fredoka One',cursive;font-size:10px;text-align:center;padding:4px 2px 8px;text-transform:uppercase;letter-spacing:.5px}
-.sb-game{display:flex;flex-direction:column;margin:2px 4px}
-.sb-t{display:flex;align-items:center;gap:4px;padding:4px 6px;background:var(--card);border:1px solid var(--border);cursor:pointer;transition:background .12s;min-height:22px}
-.sb-t:first-child{border-radius:5px 5px 0 0;border-bottom:.5px solid var(--border)}
-.sb-t:last-child{border-radius:0 0 5px 5px}
-.sb-t.picked{background:rgba(255,107,53,.1);border-color:rgba(255,107,53,.4)}
-.sb-t.correct{background:rgba(46,204,113,.1);border-color:rgba(46,204,113,.4)}
-.sb-t.wrong{background:rgba(231,76,60,.07);opacity:.7}
-.sb-t.locked{cursor:default}
-.sb-seed{font-size:8px;font-weight:800;color:var(--muted);width:12px;flex-shrink:0;text-align:center}
-.sb-t.picked .sb-seed{color:var(--orange)}
-.sb-name{font-size:9px;font-weight:700;color:var(--text);line-height:1.1;flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
-.sb-name.tbd{color:var(--muted);font-style:italic;font-weight:400}
-.sb-ctr{display:flex;flex-direction:column;justify-content:center;align-items:center;width:16px;flex-shrink:0;padding-top:20px}
-.sb-line{width:1px;height:100%;background:rgba(255,107,53,.25)}
-.pb-card{background:var(--dark);border-radius:16px;padding:16px;margin:4px 12px 16px;border:1px solid rgba(255,107,53,.3);position:relative;overflow:hidden}
-.pb-card::before{content:'';position:absolute;top:-40px;right:-40px;width:130px;height:130px;border-radius:50%;background:rgba(255,107,53,.06)}
-.pb-hdr{display:flex;align-items:center;gap:8px;margin-bottom:10px;position:relative}
-.pb-title{font-family:'Fredoka One',cursive;font-size:15px;color:var(--orange)}
-.pb-badge{background:rgba(255,107,53,.2);color:var(--orange);font-size:9px;font-weight:800;padding:2px 7px;border-radius:6px;text-transform:uppercase;letter-spacing:.5px}
-.pb-text{font-size:12px;color:rgba(255,255,255,.75);line-height:1.65;white-space:pre-wrap;position:relative}
-.lb-hdr{padding:12px 16px 10px;border-bottom:1px solid var(--border)}
-.lb-title{font-family:'Fredoka One',cursive;font-size:22px;color:var(--text)}
-.lb-sub{font-size:12px;color:var(--tm);margin-top:2px}
-.lb-actions{display:flex;gap:8px;margin-top:10px}
-.lb-list{padding:10px 12px;display:flex;flex-direction:column;gap:6px}
-.lb-row{background:var(--card);border-radius:14px;padding:12px 14px;display:flex;align-items:center;gap:12px;border:1.5px solid var(--border)}
-.lb-row.me{border-color:var(--orange);background:rgba(255,107,53,.03)}
-.lb-row.me .lb-name{color:var(--orange)}
-.lb-rank{font-family:'Fredoka One',cursive;font-size:20px;color:var(--muted);width:28px;text-align:center}
-.lb-rank.gold{color:#F7C948}.lb-rank.silver{color:#C0C0C0}.lb-rank.bronze{color:#CD7F32}
-.lb-info{flex:1;min-width:0}
-.lb-name{font-weight:800;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.lb-meta{font-size:11px;color:var(--tm);margin-top:2px}
-.lb-right{text-align:right}
-.lb-score{font-family:'Fredoka One',cursive;font-size:22px;color:var(--orange)}
-.lb-max{font-size:10px;color:var(--tm);margin-top:1px}
-.ai-badge{background:rgba(30,144,255,.1);color:var(--blue);font-size:10px;font-weight:800;padding:2px 6px;border-radius:5px;display:inline-block}
-.exp-btn{flex:1;padding:9px 8px;border-radius:10px;border:1.5px solid var(--border);background:var(--card);font-family:'Nunito',sans-serif;font-size:11px;font-weight:800;color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;transition:all .15s}
-.exp-btn:active{background:#f5f5f5}
-.pp{padding:16px}
-.ec{background:var(--card);border-radius:16px;padding:18px;border:1.5px solid var(--border);margin-bottom:14px;box-shadow:0 2px 10px rgba(0,0,0,.04)}
-.et{font-family:'Fredoka One',cursive;font-size:22px;color:var(--text);margin-bottom:4px}
-.es{font-size:13px;color:var(--tm);margin-bottom:16px;line-height:1.5}
-.il{font-size:11px;font-weight:800;color:var(--tm);text-transform:uppercase;letter-spacing:.6px;margin-bottom:5px}
-.ti{width:100%;padding:12px 14px;border-radius:10px;border:1.5px solid var(--border);font-family:'Nunito',sans-serif;font-size:15px;outline:none;transition:border-color .2s;color:var(--text);background:var(--bg);margin-bottom:12px}
-.ti:focus{border-color:var(--orange);background:#fff}
-.pi{width:100%;padding:12px;border-radius:10px;border:1.5px solid var(--border);font-family:'Fredoka One',cursive;font-size:24px;text-align:center;letter-spacing:8px;outline:none;background:var(--bg);color:var(--text);transition:border-color .2s;margin-bottom:12px}
-.pi:focus{border-color:var(--blue);background:#fff}
-.btn{width:100%;padding:13px;border-radius:12px;font-family:'Fredoka One',cursive;font-size:16px;border:none;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:7px}
-.btn:active{transform:scale(.98)}
-.btn-o{background:var(--orange);color:#fff}
-.btn-b{background:var(--blue);color:#fff}
-.btn-out{background:none;border:2px solid var(--orange);color:var(--orange)}
-.sg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
-.sb2{background:#f8f8f6;border-radius:12px;padding:10px 6px;text-align:center}
-.sv{font-family:'Fredoka One',cursive;font-size:20px}
-.sl{font-size:10px;color:#999;margin-top:2px;font-weight:700;text-transform:uppercase;letter-spacing:.4px}
-.av{width:46px;height:46px;border-radius:50%;background:var(--orange);display:flex;align-items:center;justify-content:center;font-family:'Fredoka One',cursive;font-size:19px;color:#fff;flex-shrink:0}
-.aw{background:rgba(30,144,255,.05);border:1.5px solid rgba(30,144,255,.2);border-radius:16px;padding:14px;margin-bottom:14px}
-.at{font-family:'Fredoka One',cursive;font-size:17px;color:var(--blue);margin-bottom:12px}
-.arl{font-family:'Fredoka One',cursive;font-size:14px;color:var(--text);margin:12px 0 6px}
-.ag{background:#fff;border-radius:10px;padding:10px;margin-bottom:7px;border:1px solid var(--border)}
-.agm{font-size:10px;color:#aaa;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px}
-.agt{display:flex;gap:7px;align-items:center}
-.atb{flex:1;padding:8px 5px;border-radius:9px;border:1.5px solid var(--border);background:none;font-family:'Nunito',sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:all .15s;text-align:center;color:var(--text);line-height:1.3}
-.atb.winner{background:var(--green);color:#fff;border-color:var(--green)}
-.avs{font-size:10px;color:var(--muted);font-weight:800;flex-shrink:0}
-.lo{position:fixed;inset:0;background:rgba(26,26,46,.88);display:none;flex-direction:column;align-items:center;justify-content:center;z-index:1000;gap:14px}
-.lo.show{display:flex}
-.lb2{width:50px;height:50px;border-radius:50%;background:var(--orange);animation:bb .55s ease-in-out infinite alternate}
-.ls{width:38px;height:7px;background:rgba(255,107,53,.2);border-radius:50%;animation:sp .55s ease-in-out infinite alternate;margin-top:-6px}
-@keyframes bb{from{transform:translateY(0) scale(1)}to{transform:translateY(-22px) scale(.92)}}
-@keyframes sp{from{transform:scaleX(1);opacity:.4}to{transform:scaleX(.7);opacity:.2}}
-.lt{font-family:'Fredoka One',cursive;font-size:17px;color:#fff}
-.toast{position:fixed;bottom:78px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--dark);color:#fff;padding:10px 18px;border-radius:22px;font-size:13px;font-weight:700;z-index:500;opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;white-space:nowrap;box-shadow:0 4px 18px rgba(0,0,0,.25);max-width:calc(100vw - 40px)}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-.empty{text-align:center;padding:44px 20px}
-.empty-icon{font-size:44px;margin-bottom:10px}
-.empty-text{font-size:14px;color:var(--tm);line-height:1.5}
-</style>
-</head>
-<body>
-<div class="app">
-  <div class="hdr">
-    <div class="hdr-top">
-      <div><div class="hdr-title">🏀 March Madness 2026</div><div class="hdr-sub">Private Pool · 67 Games · 192 pts max</div></div>
-      <div class="lock-badge" id="lock-badge">🔓 Open</div>
-    </div>
-    <div class="cd-strip">
-      <div><div class="cd-label">⏱ Picks lock in</div><div class="cd-time" id="cd-time">--:--:--</div></div>
-      <div class="cd-status" id="cd-status">March 19, 2026 · 12:00 PM</div>
-    </div>
-  </div>
-  <div class="screen" id="screen">
-    <div class="panel active" id="panel-bracket">
-      <div class="bracket-toolbar">
-        <div class="view-toggle">
-          <button class="vt-btn active" id="vt-r" onclick="setView('r')">Regions</button>
-          <button class="vt-btn" id="vt-s" onclick="setView('s')">Full</button>
-        </div>
-        <div class="ai-wrap" id="ai-wrap">
-          <button class="ai-btn" id="ai-btn" onclick="toggleAI()">
-            <span>✨</span><span class="ai-label" id="ai-label">AI Picks</span><span class="ai-arrow">▼</span>
-          </button>
-          <div class="ai-menu" id="ai-menu" style="display:none">
-            <div class="ai-item" onclick="selStrat('chalk',this)"><span class="si">📊</span><div><div class="sn">Chalk</div><div class="sd">Follow the seeds safely</div></div></div>
-            <div class="ai-item" onclick="selStrat('chaos',this)"><span class="si">🌀</span><div><div class="sn">Chaos</div><div class="sd">Embrace upsets everywhere</div></div></div>
-            <div class="ai-item" onclick="selStrat('cinderella',this)"><span class="si">👠</span><div><div class="sn">Cinderella</div><div class="sd">One underdog goes deep</div></div></div>
-            <div class="ai-item" onclick="selStrat('balanced',this)"><span class="si">⚖️</span><div><div class="sn">Balanced</div><div class="sd">Data-driven mix</div></div></div>
-            <button class="ai-apply" id="ai-apply" disabled onclick="applyStrat()">Select a strategy above</button>
-          </div>
-        </div>
-      </div>
-      <div class="prog-wrap"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
-      <div id="view-r"><div class="region-list" id="region-list"></div><div class="ff-block" id="ff-block"></div></div>
-      <div id="view-s" style="display:none"><div class="sbw"><div class="sb" id="sb"></div></div></div>
-      <div id="pb-area"></div>
-    </div>
-    <div class="panel" id="panel-leaderboard">
-      <div class="lb-hdr">
-        <div class="lb-title">🏆 Standings</div>
-        <div class="lb-sub" id="lb-sub">Live pool standings</div>
-        <div class="lb-actions">
-          <button class="exp-btn" onclick="exportCSV()">📋 Copy CSV for Sheets</button>
-          <button class="exp-btn" onclick="exportTxt()">📤 Share Scores</button>
-        </div>
-      </div>
-      <div class="lb-list" id="lb-list"></div>
-    </div>
-    <div class="panel" id="panel-profile"><div class="pp" id="pc"></div></div>
-  </div>
-  <div class="nav">
-    <button class="nav-btn active" id="nav-bracket" onclick="showPanel('bracket',this)"><span class="ni">📋</span><span>Bracket</span></button>
-    <button class="nav-btn" id="nav-leaderboard" onclick="showPanel('leaderboard',this)"><span class="ni">🏆</span><span>Standings</span></button>
-    <button class="nav-btn" id="nav-profile" onclick="showPanel('profile',this)"><span class="ni">👤</span><span>Me</span></button>
-  </div>
-</div>
-<div class="lo" id="lo"><div class="lb2"></div><div class="ls"></div><div class="lt" id="lt">Loading...</div></div>
-<div class="toast" id="toast"></div>
-<script>
-const T={south:[{seed:1,name:"Duke"},{seed:16,name:"Iona"},{seed:8,name:"Mississippi St."},{seed:9,name:"Boise St."},{seed:5,name:"Michigan"},{seed:12,name:"UC San Diego"},{seed:4,name:"Texas A&M"},{seed:13,name:"High Point"},{seed:6,name:"Missouri"},{seed:11,name:"Drake"},{seed:3,name:"Iowa St."},{seed:14,name:"Lipscomb"},{seed:7,name:"Marquette"},{seed:10,name:"New Mexico"},{seed:2,name:"Alabama"},{seed:15,name:"Robert Morris"}],east:[{seed:1,name:"Auburn"},{seed:16,name:"Alabama St."},{seed:8,name:"Louisville"},{seed:9,name:"Creighton"},{seed:5,name:"Michigan St."},{seed:12,name:"UC Irvine"},{seed:4,name:"Maryland"},{seed:13,name:"Grand Canyon"},{seed:6,name:"Illinois"},{seed:11,name:"Xavier"},{seed:3,name:"Wisconsin"},{seed:14,name:"Akron"},{seed:7,name:"Gonzaga"},{seed:10,name:"Vanderbilt"},{seed:2,name:"Tennessee"},{seed:15,name:"SIUE"}],west:[{seed:1,name:"Florida"},{seed:16,name:"Norfolk St."},{seed:8,name:"UConn"},{seed:9,name:"Oklahoma"},{seed:5,name:"Memphis"},{seed:12,name:"Colorado St."},{seed:4,name:"Texas Tech"},{seed:13,name:"UNC Wilmington"},{seed:6,name:"BYU"},{seed:11,name:"VCU"},{seed:3,name:"St. John's"},{seed:14,name:"Omaha"},{seed:7,name:"UCLA"},{seed:10,name:"Utah St."},{seed:2,name:"Marquette"},{seed:15,name:"Bryant"}],midwest:[{seed:1,name:"Houston"},{seed:16,name:"Wofford"},{seed:8,name:"Gonzaga"},{seed:9,name:"Georgia"},{seed:5,name:"Clemson"},{seed:12,name:"McNeese"},{seed:4,name:"Purdue"},{seed:13,name:"High Point"},{seed:6,name:"Texas"},{seed:11,name:"Drake"},{seed:3,name:"Kentucky"},{seed:14,name:"Troy"},{seed:7,name:"UCLA"},{seed:10,name:"Arkansas"},{seed:2,name:"Kansas"},{seed:15,name:"Longwood"}]};
-const REGS=['south','east','west','midwest'];
-const RC={south:'#FF6B35',east:'#1E90FF',west:'#2ECC71',midwest:'#F7C948'};
-const RL={south:'South',east:'East',west:'West',midwest:'Midwest'};
-const RN=["R64","R32","S16","E8"];
-const ARN=["Round of 64","Round of 32","Sweet 16","Elite Eight","Final Four","Championship"];
-const PTS=[1,2,4,8,16,32];
-const PIN="1234";
-const LD=new Date("2026-03-19T12:00:00");
-const SP={
-  chalk:{lbl:"📊 Chalk",pb:`CHALK STRATEGY — "Don't Get Cute"\n\nListen up. Every year, people try to be clever. They pick 13-seeds and end up watching their bracket burn by Saturday. Not us. We're playing the percentages.\n\n1-seeds win Round 1 at 99%. Duke, Auburn, Florida, Houston are our pillars. We're allowing ONE upset: UC San Diego over Michigan. 12-seeds beat 5-seeds ~35% of the time. That's our one wild card.\n\nFINAL FOUR: Duke vs Auburn, Florida vs Houston\n\nCHAMPIONSHIP: Duke vs Houston\n\n🏆 CHAMPION: Duke\n\nBold call: Duke wins it all without a single scare.`,pk:{r0_south_0:{seed:1,name:"Duke"},r0_south_1:{seed:8,name:"Mississippi St."},r0_south_2:{seed:5,name:"Michigan"},r0_south_3:{seed:4,name:"Texas A&M"},r0_south_4:{seed:6,name:"Missouri"},r0_south_5:{seed:3,name:"Iowa St."},r0_south_6:{seed:7,name:"Marquette"},r0_south_7:{seed:2,name:"Alabama"},r1_south_0:{seed:1,name:"Duke"},r1_south_1:{seed:4,name:"Texas A&M"},r1_south_2:{seed:3,name:"Iowa St."},r1_south_3:{seed:2,name:"Alabama"},r2_south_0:{seed:1,name:"Duke"},r2_south_1:{seed:2,name:"Alabama"},r3_south_0:{seed:1,name:"Duke"},r0_east_0:{seed:1,name:"Auburn"},r0_east_1:{seed:8,name:"Louisville"},r0_east_2:{seed:5,name:"Michigan St."},r0_east_3:{seed:4,name:"Maryland"},r0_east_4:{seed:6,name:"Illinois"},r0_east_5:{seed:3,name:"Wisconsin"},r0_east_6:{seed:7,name:"Gonzaga"},r0_east_7:{seed:2,name:"Tennessee"},r1_east_0:{seed:1,name:"Auburn"},r1_east_1:{seed:4,name:"Maryland"},r1_east_2:{seed:3,name:"Wisconsin"},r1_east_3:{seed:2,name:"Tennessee"},r2_east_0:{seed:1,name:"Auburn"},r2_east_1:{seed:2,name:"Tennessee"},r3_east_0:{seed:1,name:"Auburn"},r0_west_0:{seed:1,name:"Florida"},r0_west_1:{seed:8,name:"UConn"},r0_west_2:{seed:5,name:"Memphis"},r0_west_3:{seed:4,name:"Texas Tech"},r0_west_4:{seed:6,name:"BYU"},r0_west_5:{seed:3,name:"St. John's"},r0_west_6:{seed:7,name:"UCLA"},r0_west_7:{seed:2,name:"Marquette"},r1_west_0:{seed:1,name:"Florida"},r1_west_1:{seed:4,name:"Texas Tech"},r1_west_2:{seed:3,name:"St. John's"},r1_west_3:{seed:2,name:"Marquette"},r2_west_0:{seed:1,name:"Florida"},r2_west_1:{seed:3,name:"St. John's"},r3_west_0:{seed:1,name:"Florida"},r0_midwest_0:{seed:1,name:"Houston"},r0_midwest_1:{seed:8,name:"Gonzaga"},r0_midwest_2:{seed:5,name:"Clemson"},r0_midwest_3:{seed:4,name:"Purdue"},r0_midwest_4:{seed:6,name:"Texas"},r0_midwest_5:{seed:3,name:"Kentucky"},r0_midwest_6:{seed:7,name:"UCLA"},r0_midwest_7:{seed:2,name:"Kansas"},r1_midwest_0:{seed:1,name:"Houston"},r1_midwest_1:{seed:4,name:"Purdue"},r1_midwest_2:{seed:3,name:"Kentucky"},r1_midwest_3:{seed:2,name:"Kansas"},r2_midwest_0:{seed:1,name:"Houston"},r2_midwest_1:{seed:2,name:"Kansas"},r3_midwest_0:{seed:1,name:"Houston"},r4_0:{seed:1,name:"Duke"},r4_1:{seed:1,name:"Houston"},r5_0:{seed:1,name:"Duke"}}},
-  chaos:{lbl:"🌀 Chaos",pb:`CHAOS STRATEGY — "Burn It Down"\n\nForget everything. Seeds are suggestions. Every year March humiliates the experts — so this year, WE are March.\n\nRound one: Boise St. over Mississippi St., UCSD over Michigan, Drake over Missouri, New Mexico over Marquette. Creighton and Xavier crash the East party. Oklahoma and VCU cause carnage in the West.\n\nNuclear option: McNeese State. A 12-seed riding to the Elite Eight. Nobody sees it coming.\n\nFINAL FOUR: Iowa St. vs Tennessee, VCU vs Kansas\n\nCHAMPIONSHIP: Iowa St. vs Tennessee\n\n🏆 CHAMPION: Iowa St.\n\nBold call: Three 11-seeds or lower reach the Sweet 16. Screenshot this.`,pk:{r0_south_0:{seed:1,name:"Duke"},r0_south_1:{seed:9,name:"Boise St."},r0_south_2:{seed:12,name:"UC San Diego"},r0_south_3:{seed:4,name:"Texas A&M"},r0_south_4:{seed:11,name:"Drake"},r0_south_5:{seed:3,name:"Iowa St."},r0_south_6:{seed:10,name:"New Mexico"},r0_south_7:{seed:2,name:"Alabama"},r1_south_0:{seed:1,name:"Duke"},r1_south_1:{seed:12,name:"UC San Diego"},r1_south_2:{seed:11,name:"Drake"},r1_south_3:{seed:2,name:"Alabama"},r2_south_0:{seed:1,name:"Duke"},r2_south_1:{seed:11,name:"Drake"},r3_south_0:{seed:1,name:"Duke"},r0_east_0:{seed:1,name:"Auburn"},r0_east_1:{seed:9,name:"Creighton"},r0_east_2:{seed:5,name:"Michigan St."},r0_east_3:{seed:4,name:"Maryland"},r0_east_4:{seed:11,name:"Xavier"},r0_east_5:{seed:3,name:"Wisconsin"},r0_east_6:{seed:7,name:"Gonzaga"},r0_east_7:{seed:2,name:"Tennessee"},r1_east_0:{seed:9,name:"Creighton"},r1_east_1:{seed:11,name:"Xavier"},r1_east_2:{seed:3,name:"Wisconsin"},r1_east_3:{seed:2,name:"Tennessee"},r2_east_0:{seed:9,name:"Creighton"},r2_east_1:{seed:2,name:"Tennessee"},r3_east_0:{seed:2,name:"Tennessee"},r0_west_0:{seed:1,name:"Florida"},r0_west_1:{seed:9,name:"Oklahoma"},r0_west_2:{seed:5,name:"Memphis"},r0_west_3:{seed:4,name:"Texas Tech"},r0_west_4:{seed:11,name:"VCU"},r0_west_5:{seed:3,name:"St. John's"},r0_west_6:{seed:7,name:"UCLA"},r0_west_7:{seed:2,name:"Marquette"},r1_west_0:{seed:1,name:"Florida"},r1_west_1:{seed:4,name:"Texas Tech"},r1_west_2:{seed:11,name:"VCU"},r1_west_3:{seed:7,name:"UCLA"},r2_west_0:{seed:1,name:"Florida"},r2_west_1:{seed:11,name:"VCU"},r3_west_0:{seed:11,name:"VCU"},r0_midwest_0:{seed:1,name:"Houston"},r0_midwest_1:{seed:8,name:"Gonzaga"},r0_midwest_2:{seed:12,name:"McNeese"},r0_midwest_3:{seed:4,name:"Purdue"},r0_midwest_4:{seed:11,name:"Texas"},r0_midwest_5:{seed:3,name:"Kentucky"},r0_midwest_6:{seed:10,name:"Arkansas"},r0_midwest_7:{seed:2,name:"Kansas"},r1_midwest_0:{seed:1,name:"Houston"},r1_midwest_1:{seed:12,name:"McNeese"},r1_midwest_2:{seed:11,name:"Texas"},r1_midwest_3:{seed:2,name:"Kansas"},r2_midwest_0:{seed:1,name:"Houston"},r2_midwest_1:{seed:2,name:"Kansas"},r3_midwest_0:{seed:2,name:"Kansas"},r4_0:{seed:1,name:"Duke"},r4_1:{seed:11,name:"VCU"},r5_0:{seed:1,name:"Duke"}}},
-  cinderella:{lbl:"👠 Cinderella",pb:`CINDERELLA STRATEGY — "One Glass Slipper"\n\nEvery great tournament has a story. This year it belongs to Drake.\n\nThe 11-seed Bulldogs are our Cinderella. Their point guard averages 22pts and 8 assists. They press 40 minutes, shoot 38% from three, have ZERO fear.\n\nThe run: Drake beats Missouri (R1), upsets Iowa St. (R2), then exhausted Alabama walks into their buzz saw (S16). Drake to the Elite Eight.\n\nEverywhere else? Mostly chalk. Duke, Auburn, Florida, Houston all deep.\n\nFINAL FOUR: Duke, Auburn, Florida, Houston (Drake falls in E8)\n\nCHAMPIONSHIP: Duke vs Houston\n\n🏆 CHAMPION: Duke\n\nBold call: Drake covers the spread in every game they play.`,pk:{r0_south_0:{seed:1,name:"Duke"},r0_south_1:{seed:8,name:"Mississippi St."},r0_south_2:{seed:5,name:"Michigan"},r0_south_3:{seed:4,name:"Texas A&M"},r0_south_4:{seed:11,name:"Drake"},r0_south_5:{seed:3,name:"Iowa St."},r0_south_6:{seed:7,name:"Marquette"},r0_south_7:{seed:2,name:"Alabama"},r1_south_0:{seed:1,name:"Duke"},r1_south_1:{seed:4,name:"Texas A&M"},r1_south_2:{seed:11,name:"Drake"},r1_south_3:{seed:2,name:"Alabama"},r2_south_0:{seed:1,name:"Duke"},r2_south_1:{seed:11,name:"Drake"},r3_south_0:{seed:1,name:"Duke"},r0_east_0:{seed:1,name:"Auburn"},r0_east_1:{seed:8,name:"Louisville"},r0_east_2:{seed:5,name:"Michigan St."},r0_east_3:{seed:4,name:"Maryland"},r0_east_4:{seed:6,name:"Illinois"},r0_east_5:{seed:3,name:"Wisconsin"},r0_east_6:{seed:7,name:"Gonzaga"},r0_east_7:{seed:2,name:"Tennessee"},r1_east_0:{seed:1,name:"Auburn"},r1_east_1:{seed:4,name:"Maryland"},r1_east_2:{seed:3,name:"Wisconsin"},r1_east_3:{seed:2,name:"Tennessee"},r2_east_0:{seed:1,name:"Auburn"},r2_east_1:{seed:2,name:"Tennessee"},r3_east_0:{seed:1,name:"Auburn"},r0_west_0:{seed:1,name:"Florida"},r0_west_1:{seed:8,name:"UConn"},r0_west_2:{seed:5,name:"Memphis"},r0_west_3:{seed:4,name:"Texas Tech"},r0_west_4:{seed:6,name:"BYU"},r0_west_5:{seed:3,name:"St. John's"},r0_west_6:{seed:7,name:"UCLA"},r0_west_7:{seed:2,name:"Marquette"},r1_west_0:{seed:1,name:"Florida"},r1_west_1:{seed:4,name:"Texas Tech"},r1_west_2:{seed:3,name:"St. John's"},r1_west_3:{seed:2,name:"Marquette"},r2_west_0:{seed:1,name:"Florida"},r2_west_1:{seed:3,name:"St. John's"},r3_west_0:{seed:1,name:"Florida"},r0_midwest_0:{seed:1,name:"Houston"},r0_midwest_1:{seed:8,name:"Gonzaga"},r0_midwest_2:{seed:5,name:"Clemson"},r0_midwest_3:{seed:4,name:"Purdue"},r0_midwest_4:{seed:6,name:"Texas"},r0_midwest_5:{seed:3,name:"Kentucky"},r0_midwest_6:{seed:7,name:"UCLA"},r0_midwest_7:{seed:2,name:"Kansas"},r1_midwest_0:{seed:1,name:"Houston"},r1_midwest_1:{seed:4,name:"Purdue"},r1_midwest_2:{seed:3,name:"Kentucky"},r1_midwest_3:{seed:2,name:"Kansas"},r2_midwest_0:{seed:1,name:"Houston"},r2_midwest_1:{seed:2,name:"Kansas"},r3_midwest_0:{seed:1,name:"Houston"},r4_0:{seed:1,name:"Duke"},r4_1:{seed:1,name:"Houston"},r5_0:{seed:1,name:"Duke"}}},
-  balanced:{lbl:"⚖️ Balanced",pb:`BALANCED STRATEGY — "Trust the Numbers"\n\n30 years of data: pick favourites mostly, but respect matchups where upsets are historically likely.\n\n12-seeds beat 5-seeds 35% of time: UCSD over Michigan. 11-seeds beat 6-seeds 37%: Drake over Missouri, Xavier over Illinois. McNeese over Clemson — another 12-over-5 data pick.\n\nAfter Round 1 we firm up. 1-seeds in the Sweet 16 win 83% of the time.\n\nFINAL FOUR: Duke vs Auburn, Florida vs Houston\n\nCHAMPIONSHIP: Auburn vs Houston — two elite defenses. Ugly. Brilliant.\n\n🏆 CHAMPION: Auburn\n\nBold call: Every 12-over-5 we picked covers the spread.`,pk:{r0_south_0:{seed:1,name:"Duke"},r0_south_1:{seed:8,name:"Mississippi St."},r0_south_2:{seed:12,name:"UC San Diego"},r0_south_3:{seed:4,name:"Texas A&M"},r0_south_4:{seed:11,name:"Drake"},r0_south_5:{seed:3,name:"Iowa St."},r0_south_6:{seed:7,name:"Marquette"},r0_south_7:{seed:2,name:"Alabama"},r1_south_0:{seed:1,name:"Duke"},r1_south_1:{seed:4,name:"Texas A&M"},r1_south_2:{seed:3,name:"Iowa St."},r1_south_3:{seed:2,name:"Alabama"},r2_south_0:{seed:1,name:"Duke"},r2_south_1:{seed:2,name:"Alabama"},r3_south_0:{seed:1,name:"Duke"},r0_east_0:{seed:1,name:"Auburn"},r0_east_1:{seed:8,name:"Louisville"},r0_east_2:{seed:5,name:"Michigan St."},r0_east_3:{seed:4,name:"Maryland"},r0_east_4:{seed:11,name:"Xavier"},r0_east_5:{seed:3,name:"Wisconsin"},r0_east_6:{seed:7,name:"Gonzaga"},r0_east_7:{seed:2,name:"Tennessee"},r1_east_0:{seed:1,name:"Auburn"},r1_east_1:{seed:4,name:"Maryland"},r1_east_2:{seed:3,name:"Wisconsin"},r1_east_3:{seed:2,name:"Tennessee"},r2_east_0:{seed:1,name:"Auburn"},r2_east_1:{seed:2,name:"Tennessee"},r3_east_0:{seed:1,name:"Auburn"},r0_west_0:{seed:1,name:"Florida"},r0_west_1:{seed:8,name:"UConn"},r0_west_2:{seed:5,name:"Memphis"},r0_west_3:{seed:4,name:"Texas Tech"},r0_west_4:{seed:6,name:"BYU"},r0_west_5:{seed:3,name:"St. John's"},r0_west_6:{seed:10,name:"Utah St."},r0_west_7:{seed:2,name:"Marquette"},r1_west_0:{seed:1,name:"Florida"},r1_west_1:{seed:4,name:"Texas Tech"},r1_west_2:{seed:3,name:"St. John's"},r1_west_3:{seed:2,name:"Marquette"},r2_west_0:{seed:1,name:"Florida"},r2_west_1:{seed:3,name:"St. John's"},r3_west_0:{seed:1,name:"Florida"},r0_midwest_0:{seed:1,name:"Houston"},r0_midwest_1:{seed:8,name:"Gonzaga"},r0_midwest_2:{seed:12,name:"McNeese"},r0_midwest_3:{seed:4,name:"Purdue"},r0_midwest_4:{seed:6,name:"Texas"},r0_midwest_5:{seed:3,name:"Kentucky"},r0_midwest_6:{seed:7,name:"UCLA"},r0_midwest_7:{seed:2,name:"Kansas"},r1_midwest_0:{seed:1,name:"Houston"},r1_midwest_1:{seed:4,name:"Purdue"},r1_midwest_2:{seed:3,name:"Kentucky"},r1_midwest_3:{seed:2,name:"Kansas"},r2_midwest_0:{seed:1,name:"Houston"},r2_midwest_1:{seed:2,name:"Kansas"},r3_midwest_0:{seed:1,name:"Houston"},r4_0:{seed:1,name:"Duke"},r4_1:{seed:1,name:"Auburn"},r5_0:{seed:1,name:"Auburn"}}}
-};
+{\rtf1\ansi\ansicpg1252\cocoartf2708
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
 
-let S={myName:null,myId:null,selStrat:null,pendStrat:null,picks:{},pb:null,usedAI:false,results:{},adminOK:false,games:[],view:'r',rr:{south:0,east:0,west:0,midwest:0},exp:{south:true,east:false,west:false,midwest:false}};
-
-function buildGames(){const g=[];REGS.forEach(reg=>{const t=T[reg];for(let i=0;i<8;i++)g.push({id:`r0_${reg}_${i}`,round:0,region:reg,t1:{...t[i*2]},t2:{...t[i*2+1]},slot:i});});for(let r=1;r<=3;r++)REGS.forEach(reg=>{const c=Math.pow(2,3-r);for(let i=0;i<c;i++)g.push({id:`r${r}_${reg}_${i}`,round:r,region:reg,t1:null,t2:null,slot:i});});g.push({id:'r4_0',round:4,region:'ff',t1:null,t2:null,slot:0});g.push({id:'r4_1',round:4,region:'ff',t1:null,t2:null,slot:1});g.push({id:'r5_0',round:5,region:'champ',t1:null,t2:null,slot:0});return g;}
-
-function casc(){for(let r=1;r<=3;r++)REGS.forEach(reg=>{const pv=S.games.filter(g=>g.round===r-1&&g.region===reg);const cr=S.games.filter(g=>g.round===r&&g.region===reg);cr.forEach((gm,gi)=>{gm.t1=pv[gi*2]?(S.picks[pv[gi*2].id]||null):null;gm.t2=pv[gi*2+1]?(S.picks[pv[gi*2+1].id]||null):null;});});const r3=REGS.map(reg=>S.games.find(g=>g.round===3&&g.region===reg));const ff=S.games.filter(g=>g.round===4);if(ff[0]){ff[0].t1=r3[0]?(S.picks[r3[0].id]||null):null;ff[0].t2=r3[1]?(S.picks[r3[1].id]||null):null;}if(ff[1]){ff[1].t1=r3[2]?(S.picks[r3[2].id]||null):null;ff[1].t2=r3[3]?(S.picks[r3[3].id]||null):null;}const ch=S.games.find(g=>g.round===5);if(ch){ch.t1=ff[0]?(S.picks[ff[0].id]||null):null;ch.t2=ff[1]?(S.picks[ff[1].id]||null):null;}}
-
-function dc(gid,team){const pk=S.picks[gid];const rs=S.results[gid];if(!pk||!team||pk.name!==team.name)return'';if(!rs)return' picked';return rs.name===team.name?' correct':' wrong';}
-function dt(gid,team){const pk=S.picks[gid];const rs=S.results[gid];if(!pk||!team||pk.name!==team.name)return'';if(!rs)return'✓';return rs.name===team.name?'✓':'✗';}
-function rcc(gid,team,lk){const pk=S.picks[gid];const rs=S.results[gid];let c=lk||rs?' locked':'';if(!pk||!team||pk.name!==team.name)return c;if(!rs)return c+' picked';return c+(rs.name===team.name?' correct':' wrong');}
-
-function pick(gid,ti){if(!S.myName){toast("Enter your name first! 👤");showPanel('profile',document.getElementById('nav-profile'));return;}if(new Date()>=LD){toast("Picks are locked! 🔒");return;}const game=S.games.find(g=>g.id===gid);if(!game)return;const team=ti===0?game.t1:game.t2;if(!team){toast("Pick earlier rounds first!");return;}S.picks[gid]={...team};save();casc();renderB();toast(team.name+' ✓');}
-
-function renderRV(){
-  const list=document.getElementById('region-list');list.innerHTML='';
-  REGS.forEach(reg=>{
-    const ex=S.exp[reg];const tp=S.games.filter(g=>g.region===reg&&S.picks[g.id]).length;const tg=S.games.filter(g=>g.region===reg&&g.round<=3).length;
-    const c=document.createElement('div');c.className='region-card'+(ex?' expanded':'');
-    c.innerHTML=`<div class="rc-head" onclick="toggleR('${reg}')"><div class="rc-color" style="background:${RC[reg]}"></div><div class="rc-name">${RL[reg]}</div><div class="rc-meta">${tp}/${tg}</div><div class="rc-arrow">▼</div></div><div class="rc-body"><div class="rc-tabs" id="rct-${reg}"></div><div class="rc-games" id="rcg-${reg}"></div></div>`;
-    list.appendChild(c);if(ex){renderRTabs(reg);renderRGames(reg);}
-  });
-  const ffb=document.getElementById('ff-block');const ff=S.games.filter(g=>g.round===4);const ch=S.games.find(g=>g.round===5);const lk=new Date()>=LD;
-  let h=`<div class="ff-hdr">🏆 Final Four + Championship</div><div class="ff-games">`;
-  [...ff,ch].forEach(game=>{if(!game)return;const lbl=game.round===4?`FF Game ${game.slot+1}`:'Championship';h+=`<div class="rc-game"><div class="rc-ghdr"><span>${lbl}</span><span class="rc-pts">${PTS[game.round]}pt</span></div><div class="rc-team${rcc(game.id,game.t1,lk)}" data-gid="${game.id}" data-ti="0"><div class="rc-seed">${game.t1?.seed||'?'}</div><div class="rc-tname${game.t1?'':' tbd'}">${game.t1?.name||'TBD'}</div><div class="rc-dot${dc(game.id,game.t1)}">${dt(game.id,game.t1)}</div></div><div class="rc-team${rcc(game.id,game.t2,lk)}" data-gid="${game.id}" data-ti="1"><div class="rc-seed">${game.t2?.seed||'?'}</div><div class="rc-tname${game.t2?'':' tbd'}">${game.t2?.name||'TBD'}</div><div class="rc-dot${dc(game.id,game.t2)}">${dt(game.id,game.t2)}</div></div></div>`;});
-  h+='</div>';ffb.innerHTML=h;
-  if(!lk)ffb.querySelectorAll('.rc-team:not(.locked)').forEach(row=>row.addEventListener('click',()=>{if(!S.results[row.dataset.gid])pick(row.dataset.gid,parseInt(row.dataset.ti));}));
-}
-function toggleR(reg){S.exp[reg]=!S.exp[reg];renderRV();}
-function renderRTabs(reg){const w=document.getElementById(`rct-${reg}`);if(!w)return;w.innerHTML='';RN.forEach((n,i)=>{const b=document.createElement('button');b.className='rc-tab'+(i===S.rr[reg]?' active':'');b.textContent=n;b.onclick=()=>{S.rr[reg]=i;renderRTabs(reg);renderRGames(reg);};w.appendChild(b);});}
-function renderRGames(reg){const w=document.getElementById(`rcg-${reg}`);if(!w)return;const games=S.games.filter(g=>g.round===S.rr[reg]&&g.region===reg);const lk=new Date()>=LD;w.innerHTML='';games.forEach(game=>{const d=document.createElement('div');d.className='rc-game';d.innerHTML=`<div class="rc-ghdr"><span>${RL[reg]} · Game ${game.slot+1}</span><span class="rc-pts">${PTS[game.round]}pt</span></div><div class="rc-team${rcc(game.id,game.t1,lk)}" data-gid="${game.id}" data-ti="0"><div class="rc-seed">${game.t1?.seed||'?'}</div><div class="rc-tname${game.t1?'':' tbd'}">${game.t1?.name||'TBD — pick R64 first'}</div><div class="rc-dot${dc(game.id,game.t1)}">${dt(game.id,game.t1)}</div></div><div class="rc-team${rcc(game.id,game.t2,lk)}" data-gid="${game.id}" data-ti="1"><div class="rc-seed">${game.t2?.seed||'?'}</div><div class="rc-tname${game.t2?'':' tbd'}">${game.t2?.name||'TBD — pick R64 first'}</div><div class="rc-dot${dc(game.id,game.t2)}">${dt(game.id,game.t2)}</div></div>`;if(!lk&&!S.results[game.id])d.querySelectorAll('.rc-team').forEach(row=>row.addEventListener('click',()=>pick(row.dataset.gid,parseInt(row.dataset.ti))));w.appendChild(d);});}
-
-function renderSB(){
-  const wrap=document.getElementById('sb');wrap.innerHTML='';const lk=new Date()>=LD;
-  function mkCol(reg,r){const col=document.createElement('div');col.className='sb-col';col.innerHTML=`<div class="sb-chdr" style="color:${RC[reg]}99">${r===0?RL[reg]:ARN[r]}</div>`;const games=S.games.filter(g=>g.round===r&&g.region===reg);const sp=Math.pow(2,r);games.forEach(game=>{const spc=document.createElement('div');spc.style.height=`${(sp-1)*28}px`;col.appendChild(spc);const gd=document.createElement('div');gd.className='sb-game';[game.t1,game.t2].forEach((team,ti)=>{const row=document.createElement('div');const pk=S.picks[game.id];const rs=S.results[game.id];let cls='sb-t';if(pk&&team&&pk.name===team.name){if(!rs)cls+=' picked';else cls+=rs.name===team.name?' correct':' wrong';}if(lk||rs)cls+=' locked';row.className=cls;row.innerHTML=`<span class="sb-seed">${team?.seed||'?'}</span><span class="sb-name${team?'':' tbd'}">${team?.name||'TBD'}</span>`;if(!lk&&!rs&&team)row.addEventListener('click',()=>pick(game.id,ti));gd.appendChild(row);});col.appendChild(gd);});return col;}
-  function mkCtr(){const c=document.createElement('div');c.className='sb-ctr';c.innerHTML='<div class="sb-line"></div>';return c;}
-  ['south','east'].forEach(reg=>{const sec=document.createElement('div');sec.className='sb-sec';for(let r=0;r<=3;r++)sec.appendChild(mkCol(reg,r));sec.appendChild(mkCtr());wrap.appendChild(sec);});
-  const mid=document.createElement('div');mid.style.cssText='display:flex;flex-direction:column;justify-content:center;width:150px;flex-shrink:0;padding:20px 4px 0';const ml=document.createElement('div');ml.style.cssText='font-family:Fredoka One,cursive;font-size:10px;color:rgba(255,107,53,.7);text-align:center;margin-bottom:10px;letter-spacing:.5px';ml.textContent='FINAL FOUR & CHAMP';mid.appendChild(ml);
-  [...S.games.filter(g=>g.round===4),S.games.find(g=>g.round===5)].forEach(game=>{if(!game)return;const gd=document.createElement('div');gd.className='sb-game';gd.style.margin='6px 4px';[game.t1,game.t2].forEach((team,ti)=>{const row=document.createElement('div');const pk=S.picks[game.id];const rs=S.results[game.id];let cls='sb-t';if(pk&&team&&pk.name===team.name){if(!rs)cls+=' picked';else cls+=rs.name===team.name?' correct':' wrong';}if(lk||rs)cls+=' locked';row.className=cls;if(game.round===5)row.style.background='rgba(255,107,53,0.06)';row.innerHTML=`<span class="sb-seed">${team?.seed||'?'}</span><span class="sb-name${team?'':' tbd'}">${team?.name||'TBD'}</span>`;if(!lk&&!rs&&team)row.addEventListener('click',()=>pick(game.id,ti));gd.appendChild(row);});mid.appendChild(gd);});wrap.appendChild(mid);
-  ['west','midwest'].forEach(reg=>{const sec=document.createElement('div');sec.className='sb-sec';sec.appendChild(mkCtr());for(let r=3;r>=0;r--)sec.appendChild(mkCol(reg,r));wrap.appendChild(sec);});
-}
-
-function renderB(){casc();const tp=Object.keys(S.picks).length;document.getElementById('prog-fill').style.width=Math.min(100,Math.round((tp/67)*100))+'%';if(S.view==='r'){document.getElementById('view-r').style.display='block';document.getElementById('view-s').style.display='none';renderRV();}else{document.getElementById('view-r').style.display='none';document.getElementById('view-s').style.display='block';renderSB();}document.getElementById('pb-area').innerHTML=S.pb?`<div class="pb-card"><div class="pb-hdr"><div class="pb-title">📋 Coach's Playbook</div><div class="pb-badge">${S.selStrat||'AI'}</div></div><div class="pb-text">${S.pb}</div></div>`:''; }
-function setView(v){S.view=v;document.getElementById('vt-r').classList.toggle('active',v==='r');document.getElementById('vt-s').classList.toggle('active',v==='s');renderB();}
-function toggleAI(){const m=document.getElementById('ai-menu');const b=document.getElementById('ai-btn');const o=m.style.display==='none';m.style.display=o?'block':'none';b.classList.toggle('open',o);if(o)setTimeout(()=>document.addEventListener('click',function h(e){if(!document.getElementById('ai-wrap').contains(e.target)){m.style.display='none';b.classList.remove('open');}document.removeEventListener('click',h);},100));}
-function selStrat(s,el){S.pendStrat=s;const d=SP[s];document.getElementById('ai-label').textContent=d.lbl;const ab=document.getElementById('ai-apply');ab.disabled=false;ab.textContent=`Apply ${d.lbl}`;document.querySelectorAll('.ai-item').forEach(i=>i.style.background='');el.style.background='rgba(255,107,53,.08)';}
-function applyStrat(){if(!S.myName){toast("Enter your name first!");closeAI();showPanel('profile',document.getElementById('nav-profile'));return;}if(!S.pendStrat||new Date()>=LD){toast(new Date()>=LD?"Picks locked!":"Select a strategy");return;}const d=SP[S.pendStrat];S.picks={};Object.entries(d.pk).forEach(([gid,t])=>{if(t&&t.name)S.picks[gid]={...t};});S.pb=d.pb;S.selStrat=S.pendStrat;S.usedAI=true;closeAI();save();renderB();toast(`✨ ${d.lbl} picks applied!`);}
-function closeAI(){document.getElementById('ai-menu').style.display='none';document.getElementById('ai-btn').classList.remove('open');}
-
-function renderLB(){const list=document.getElementById('lb-list');const pts=getAll();if(!pts.length){list.innerHTML='<div class="empty"><div class="empty-icon">👀</div><div class="empty-text">No participants yet.</div></div>';return;}const sc=pts.map(p=>({...p,score:calcScore(p.picks||{}),max:calcMax(p.picks||{})})).sort((a,b)=>b.score-a.score||b.max-a.max);list.innerHTML='';sc.forEach((p,i)=>{const im=p.id===S.myId;const rc2=i===0?' gold':i===1?' silver':i===2?' bronze':'';const rd=i===0?'🥇':i===1?'🥈':i===2?'🥉':i+1;const row=document.createElement('div');row.className='lb-row'+(im?' me':'');row.innerHTML=`<div class="lb-rank${rc2}">${rd}</div><div class="lb-info"><div class="lb-name">${p.name}${im?' (you)':''}</div><div class="lb-meta">${Object.keys(p.picks||{}).length}/67 picks ${p.usedAI?'&nbsp;<span class="ai-badge">AI</span>':''}</div></div><div class="lb-right"><div class="lb-score">${p.score}</div><div class="lb-max">max ${p.max}</div></div>`;list.appendChild(row);});const gs=Object.keys(S.results).length;document.getElementById('lb-sub').textContent=`${gs} game${gs!==1?'s':''} scored · ${sc.length} player${sc.length!==1?'s':''}`;}
-function exportCSV(){const pts=getAll();if(!pts.length){toast("No participants yet!");return;}const sc=pts.map(p=>({...p,score:calcScore(p.picks||{}),max:calcMax(p.picks||{})})).sort((a,b)=>b.score-a.score);let csv='Rank,Name,Score,Max Possible,Picks Made,Strategy\n';sc.forEach((p,i)=>csv+=`${i+1},"${p.name}",${p.score},${p.max},${Object.keys(p.picks||{}).length}/67,${p.usedAI?(p.selStrat||'AI'):'Manual'}\n`);copyTxt(csv,"📋 CSV copied! Paste into Google Sheets");}
-function exportTxt(){const pts=getAll();if(!pts.length){toast("No participants yet!");return;}const sc=pts.map(p=>({...p,score:calcScore(p.picks||{})})).sort((a,b)=>b.score-a.score);const m=['🥇','🥈','🥉'];let txt='🏀 March Madness 2026 Standings\n\n';sc.forEach((p,i)=>txt+=`${m[i]||i+1+'.'} ${p.name} — ${p.score} pts\n`);txt+=`\nGames scored: ${Object.keys(S.results).length}/67`;copyTxt(txt,"📤 Copied! Paste to group chat");}
-function copyTxt(txt,msg){try{navigator.clipboard.writeText(txt).then(()=>toast(msg)).catch(()=>fbCopy(txt,msg));}catch(e){fbCopy(txt,msg);}}
-function fbCopy(txt,msg){const ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');toast(msg);}catch(e){toast("Copy failed — try desktop");}document.body.removeChild(ta);}
-function calcScore(picks){let s=0;Object.entries(picks).forEach(([gid,t])=>{const rs=S.results[gid];if(rs&&rs.name===t.name){const g=S.games.find(g=>g.id===gid);if(g)s+=PTS[g.round];}});return s;}
-function calcMax(picks){let m=calcScore(picks);Object.entries(picks).forEach(([gid,t])=>{if(!S.results[gid]){const g=S.games.find(g=>g.id===gid);if(g)m+=PTS[g.round];}});return m;}
-function getAll(){const all=[];if(S.myName&&S.myId)all.push({id:S.myId,name:S.myName,picks:S.picks,usedAI:S.usedAI,selStrat:S.selStrat});(S.others||[]).forEach(p=>{if(p.id!==S.myId)all.push(p);});return all;}
-
-function renderProfile(){const c=document.getElementById('pc');
-  if(!S.myName){c.innerHTML=`<div class="ec"><div class="et">👋 Join the Pool</div><div class="es">Enter your name to start making picks. No account needed.</div><div class="il">Your Name</div><input class="ti" id="ni" type="text" placeholder="e.g. Jamie, The Commissioner..." maxlength="24"/><button class="btn btn-o" onclick="saveName()">Let's Go! 🏀</button></div><div class="ec" style="border-color:rgba(30,144,255,.25);background:rgba(30,144,255,.02)"><div style="font-family:'Fredoka One',cursive;font-size:18px;color:var(--blue);margin-bottom:4px">🔐 Admin Panel</div><div style="font-size:12px;color:var(--tm);margin-bottom:14px">Enter game results and manage the pool</div><div class="il">Admin PIN</div><input class="pi" id="apinput" type="password" placeholder="••••" maxlength="4"/><button class="btn btn-b" onclick="checkPin()">Unlock Admin</button></div>`;
-  document.getElementById('ni')?.addEventListener('keydown',e=>{if(e.key==='Enter')saveName();});document.getElementById('apinput')?.addEventListener('keydown',e=>{if(e.key==='Enter')checkPin();});return;}
-  const ms=calcScore(S.picks);const mm=calcMax(S.picks);const pc=Object.keys(S.picks).length;const rank=getAll().map(p=>({...p,s:calcScore(p.picks||{})})).sort((a,b)=>b.s-a.s).findIndex(p=>p.id===S.myId)+1;
-  c.innerHTML=`<div class="ec"><div style="display:flex;align-items:center;gap:12px;margin-bottom:14px"><div class="av">${S.myName[0].toUpperCase()}</div><div style="flex:1;min-width:0"><div style="font-family:'Fredoka One',cursive;font-size:19px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${S.myName}</div><div style="font-size:12px;color:var(--tm);margin-top:2px">${S.usedAI?'🤖 '+(S.selStrat||'AI')+' strategy':'✍️ Manual picks'}</div></div><button class="btn btn-out" style="font-size:11px;padding:6px 10px;width:auto;font-family:'Nunito',sans-serif" onclick="resetName()">Edit</button></div><div class="sg"><div class="sb2"><div class="sv" style="color:var(--orange)">${ms}</div><div class="sl">Score</div></div><div class="sb2"><div class="sv" style="color:var(--blue)">${mm}</div><div class="sl">Max</div></div><div class="sb2"><div class="sv" style="color:var(--tm)">${rank>0?'#'+rank:'—'}</div><div class="sl">Rank</div></div></div><div style="background:#f8f8f6;border-radius:10px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:13px;color:var(--tm)">Picks filled</span><span style="font-weight:800;font-size:13px">${pc}/67</span></div></div>${S.adminOK?buildAdmin():`<div class="ec" style="border-color:rgba(30,144,255,.2);background:rgba(30,144,255,.02)"><div style="font-family:'Fredoka One',cursive;font-size:18px;color:var(--blue);margin-bottom:4px">🔐 Admin Panel</div><div style="font-size:12px;color:var(--tm);margin-bottom:14px">Enter results for completed games</div><div class="il">Admin PIN</div><input class="pi" id="apinput" type="password" placeholder="••••" maxlength="4"/><button class="btn btn-b" onclick="checkPin()">Unlock Admin</button></div>`}`;
-  document.getElementById('apinput')?.addEventListener('keydown',e=>{if(e.key==='Enter')checkPin();});}
-
-function buildAdmin(){casc();let h=`<div class="aw"><div class="at">⚙️ Admin — Enter Results</div>`;for(let r=0;r<6;r++){const pl=S.games.filter(g=>g.round===r&&g.t1&&g.t2);if(!pl.length)continue;h+=`<div class="arl">${ARN[r]}</div>`;pl.forEach(game=>{const rs=S.results[game.id];const rl=game.region==='ff'?'Final Four':game.region==='champ'?'Championship':RL[game.region]||game.region;h+=`<div class="ag"><div class="agm">${rl} · Game ${game.slot+1}</div><div class="agt"><button class="atb${rs&&rs.name===game.t1.name?' winner':''}" onclick="setRes('${game.id}',0)">(${game.t1.seed}) ${game.t1.name}</button><div class="avs">vs</div><button class="atb${rs&&rs.name===game.t2.name?' winner':''}" onclick="setRes('${game.id}',1)">(${game.t2.seed}) ${game.t2.name}</button></div></div>`;});}return h+'</div>';}
-function setRes(gid,ti){casc();const game=S.games.find(g=>g.id===gid);if(!game)return;const team=ti===0?game.t1:game.t2;if(!team)return;if(S.results[gid]&&S.results[gid].name===team.name){delete S.results[gid];toast('Result cleared');}else{S.results[gid]={...team};toast(`✅ ${team.name} wins!`);}save();renderProfile();if(document.getElementById('panel-bracket').classList.contains('active'))renderB();if(document.getElementById('panel-leaderboard').classList.contains('active'))renderLB();}
-function checkPin(){const i=document.getElementById('apinput');if(i&&i.value===PIN){S.adminOK=true;toast("Admin unlocked! 🔓");renderProfile();}else{toast("Wrong PIN");if(i){i.value='';i.focus();}}}
-function saveName(){const i=document.getElementById('ni');const n=i?.value?.trim();if(!n){toast("Enter a name!");return;}S.myName=n;if(!S.myId)S.myId='p_'+Date.now().toString(36)+Math.random().toString(36).substr(2,4);save();renderProfile();showPanel('bracket',document.getElementById('nav-bracket'));toast(`Welcome, ${n}! 🏀`);}
-function resetName(){if(confirm(`Change name from "${S.myName}"?`)){S.myName=null;renderProfile();}}
-
-function showPanel(name,btn){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));document.getElementById('panel-'+name).classList.add('active');btn.classList.add('active');document.getElementById('screen').scrollTop=0;closeAI();if(name==='bracket')renderB();else if(name==='leaderboard')renderLB();else if(name==='profile')renderProfile();}
-
-function updateCD(){const diff=LD-new Date();const badge=document.getElementById('lock-badge');if(diff<=0){document.getElementById('cd-time').textContent='LOCKED';document.getElementById('cd-status').textContent='No more changes allowed';if(badge){badge.textContent='🔒 Locked';badge.style.color='#ff6b35';}return;}const h=Math.floor(diff/3600000),m=Math.floor((diff%3600000)/60000),s=Math.floor((diff%60000)/1000);document.getElementById('cd-time').textContent=`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;if(diff<3600000)document.getElementById('cd-time').style.color='#ff6b35';}
-
-let tt;function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),2400);}
-function save(){try{localStorage.setItem('mmb26',JSON.stringify({myName:S.myName,myId:S.myId,picks:S.picks,pb:S.pb,usedAI:S.usedAI,selStrat:S.selStrat,results:S.results,others:S.others||[],view:S.view,rr:S.rr,exp:S.exp}));}catch(e){}}
-function load(){try{const s=localStorage.getItem('mmb26');if(s)Object.assign(S,JSON.parse(s));}catch(e){}}
-
-function init(){S.games=buildGames();load();casc();renderB();updateCD();setInterval(updateCD,1000);}
-init();
-</script>
-</body>
-</html>
+\f0\fs24 \cf0 <!DOCTYPE html>\
+<html lang="en">\
+<head>\
+<meta charset="UTF-8">\
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">\
+<title>\uc0\u55356 \u57280  March Madness 2026</title>\
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">\
+<style>\
+*,*::before,*::after\{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent\}\
+:root\{--orange:#FF6B35;--orange-d:#e55a25;--blue:#1E90FF;--dark:#1A1A2E;--bg:#FAFAF7;--card:#fff;--green:#2ECC71;--red:#E74C3C;--muted:#B0B0B0;--yellow:#F7C948;--border:#EBEBEB;--text:#1A1A2E;--tm:#888;\}\
+/* FIXED: Mobile Viewport Height (100dvh) */\
+html,body\{height:100%;overflow:hidden;background:var(--bg);font-family:'Nunito',sans-serif;color:var(--text)\}\
+.app\{display:flex;flex-direction:column;height:100%;height:100dvh;max-width:500px;margin:0 auto;background:var(--bg);position:relative;overflow:hidden;box-shadow:0 0 60px rgba(0,0,0,0.12)\}\
+.hdr\{background:var(--dark);padding:12px 16px 10px;flex-shrink:0;position:relative;overflow:hidden\}\
+.hdr::before\{content:'';position:absolute;top:-30px;right:-30px;width:120px;height:120px;border-radius:50%;background:rgba(255,107,53,0.12)\}\
+.hdr::after\{content:'';position:absolute;bottom:-20px;left:40px;width:80px;height:80px;border-radius:50%;background:rgba(30,144,255,0.08)\}\
+.hdr-top\{display:flex;align-items:center;justify-content:space-between;position:relative;z-index:1\}\
+.hdr-title\{font-family:'Fredoka One',cursive;font-size:22px;color:var(--orange)\}\
+.hdr-sub\{font-size:11px;color:rgba(255,255,255,0.4);margin-top:1px\}\
+.lock-badge\{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:20px;padding:3px 9px;font-size:10px;color:rgba(255,255,255,0.6);font-weight:700\}\
+.cd-strip\{background:rgba(255,107,53,0.12);border:1px solid rgba(255,107,53,0.25);border-radius:10px;padding:6px 12px;margin-top:8px;display:flex;align-items:center;justify-content:space-between;position:relative;z-index:1\}\
+.cd-label\{font-size:10px;color:rgba(255,107,53,0.8);font-weight:800;text-transform:uppercase;letter-spacing:.8px\}\
+.cd-time\{font-family:'Fredoka One',cursive;font-size:16px;color:#fff;letter-spacing:1px\}\
+.cd-status\{font-size:10px;color:rgba(255,255,255,0.4)\}\
+.screen\{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none\}\
+.screen::-webkit-scrollbar\{display:none\}\
+.panel\{display:none;min-height:100%\}\
+.panel.active\{display:block\}\
+.nav\{display:flex;background:var(--card);border-top:1px solid var(--border);flex-shrink:0;padding-bottom:env(safe-area-inset-bottom,0)\}\
+.nav-btn\{flex:1;padding:10px 4px 8px;font-size:10px;font-weight:800;color:var(--muted);border:none;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;transition:color .2s;font-family:'Nunito',sans-serif;text-transform:uppercase;letter-spacing:.4px\}\
+.nav-btn.active\{color:var(--orange)\}\
+.nav-btn .ni\{font-size:20px;line-height:1\}\
+.bracket-toolbar\{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--bg);border-bottom:1px solid var(--border);flex-shrink:0\}\
+.view-toggle\{display:flex;background:#eee;border-radius:8px;padding:2px;gap:2px;flex-shrink:0\}\
+.vt-btn\{padding:5px 10px;border-radius:6px;font-size:11px;font-weight:800;border:none;background:none;cursor:pointer;color:#999;font-family:'Nunito',sans-serif;white-space:nowrap;transition:all .15s\}\
+.vt-btn.active\{background:var(--card);color:var(--text);box-shadow:0 1px 3px rgba(0,0,0,.1)\}\
+.ai-wrap\{position:relative;flex:1\}\
+.ai-btn\{width:100%;padding:6px 10px;border-radius:8px;border:1.5px solid var(--border);background:var(--card);font-family:'Nunito',sans-serif;font-size:12px;font-weight:700;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:6px\}\
+.ai-label\{flex:1;overflow:hidden;text-overflow:ellipsis;text-align:left\}\
+.ai-arrow\{font-size:10px;color:var(--muted);flex-shrink:0;transition:transform .2s\}\
+.ai-btn.open .ai-arrow\{transform:rotate(180deg)\}\
+.ai-menu\{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--card);border:1.5px solid var(--border);border-radius:10px;overflow:hidden;z-index:100;box-shadow:0 4px 20px rgba(0,0,0,.12)\}\
+.ai-item\{padding:10px 12px;cursor:pointer;display:flex;align-items:center;gap:8px;border-bottom:1px solid #f5f5f5;transition:background .1s\}\
+.ai-item:last-of-type\{border-bottom:none\}\
+.ai-item:active,.ai-item:hover\{background:#fafafa\}\
+.si\{font-size:16px;width:20px;text-align:center;flex-shrink:0\}\
+.sn\{font-size:12px;font-weight:800;color:var(--text)\}\
+.sd\{font-size:10px;color:var(--tm);margin-top:1px\}\
+.ai-apply\{width:calc(100% - 16px);margin:8px;padding:10px;background:var(--orange);color:#fff;border:none;border-radius:8px;font-family:'Fredoka One',cursive;font-size:15px;cursor:pointer\}\
+.ai-apply:disabled\{background:#ddd;color:#aaa;cursor:default\}\
+.prog-wrap\{height:4px;background:#eee;flex-shrink:0\}\
+.prog-fill\{height:100%;background:var(--orange);transition:width .5s\}\
+.region-list\{padding:10px 12px;display:flex;flex-direction:column;gap:8px\}\
+.region-card\{background:var(--card);border-radius:14px;overflow:hidden;border:1.5px solid var(--border);box-shadow:0 1px 6px rgba(0,0,0,.04)\}\
+.region-card.expanded .rc-body\{display:block\}\
+.rc-head\{display:flex;align-items:center;padding:12px 14px;cursor:pointer;gap:10px;user-select:none\}\
+.rc-color\{width:10px;height:10px;border-radius:50%;flex-shrink:0\}\
+.rc-name\{font-family:'Fredoka One',cursive;font-size:16px;flex:1\}\
+.rc-meta\{font-size:11px;color:var(--tm);font-weight:700\}\
+.rc-arrow\{font-size:12px;color:var(--muted);transition:transform .25s;flex-shrink:0\}\
+.region-card.expanded .rc-arrow\{transform:rotate(180deg)\}\
+.rc-body\{display:none;border-top:1px solid var(--border)\}\
+.rc-tabs\{display:flex;gap:4px;padding:8px 10px 6px;overflow-x:auto;scrollbar-width:none;background:#fafafa;border-bottom:1px solid var(--border)\}\
+.rc-tabs::-webkit-scrollbar\{display:none\}\
+.rc-tab\{white-space:nowrap;padding:4px 10px;border-radius:16px;font-size:10px;font-weight:800;border:1.5px solid var(--border);background:none;cursor:pointer;color:#999;font-family:'Nunito',sans-serif;transition:all .15s\}\
+.rc-tab.active\{background:var(--orange);color:#fff;border-color:var(--orange)\}\
+.rc-games\{padding:8px 10px;display:flex;flex-direction:column;gap:6px\}\
+.rc-game\{background:var(--bg);border-radius:10px;overflow:hidden;border:1px solid var(--border)\}\
+.rc-ghdr\{background:#f0f0f0;padding:3px 10px;font-size:9px;font-weight:800;color:#999;text-transform:uppercase;letter-spacing:.6px;display:flex;justify-content:space-between\}\
+.rc-pts\{color:var(--orange)\}\
+.rc-team\{display:flex;align-items:center;gap:8px;padding:9px 10px;cursor:pointer;transition:background .12s;border-bottom:1px solid #f5f5f5\}\
+.rc-team:last-child\{border-bottom:none\}\
+.rc-team:active\{background:rgba(255,107,53,.05)\}\
+.rc-team.picked\{background:rgba(255,107,53,.07)\}\
+.rc-team.correct\{background:rgba(46,204,113,.08)\}\
+.rc-team.wrong\{background:rgba(231,76,60,.05)\}\
+.rc-team.locked\{cursor:default\}\
+.rc-seed\{width:20px;height:20px;border-radius:5px;background:#ebebeb;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:#666;flex-shrink:0\}\
+.rc-team.picked .rc-seed\{background:rgba(255,107,53,.18);color:var(--orange)\}\
+.rc-team.correct .rc-seed\{background:rgba(46,204,113,.2);color:#1a9e52\}\
+.rc-team.wrong .rc-seed\{background:rgba(231,76,60,.12);color:#c0392b\}\
+.rc-tname\{flex:1;font-size:13px;font-weight:700;color:var(--text)\}\
+.rc-tname.tbd\{color:var(--muted);font-style:italic;font-weight:400;font-size:12px\}\
+.rc-dot\{width:18px;height:18px;border-radius:50%;border:2px solid #ddd;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0\}\
+.rc-dot.picked\{background:var(--orange);border-color:var(--orange)\}\
+.rc-dot.correct\{background:var(--green);border-color:var(--green)\}\
+.rc-dot.wrong\{background:var(--red);border-color:var(--red)\}\
+.ff-block\{margin:0 12px 12px;background:var(--dark);border-radius:14px;overflow:hidden;border:1px solid rgba(255,107,53,.3)\}\
+.ff-hdr\{padding:8px 14px;font-family:'Fredoka One',cursive;font-size:14px;color:var(--orange)\}\
+.ff-games\{padding:0 10px 10px;display:flex;flex-direction:column;gap:6px\}\
+.sbw\{overflow-x:auto;overflow-y:visible;padding:12px 0 16px;-webkit-overflow-scrolling:touch;scrollbar-width:thin\}\
+.sb\{display:flex;min-width:1320px;padding:0 12px\}\
+.sb-sec\{display:flex\}\
+.sb-col\{display:flex;flex-direction:column;width:130px;flex-shrink:0\}\
+.sb-chdr\{font-family:'Fredoka One',cursive;font-size:10px;text-align:center;padding:4px 2px 8px;text-transform:uppercase;letter-spacing:.5px\}\
+.sb-game\{display:flex;flex-direction:column;margin:2px 4px\}\
+.sb-t\{display:flex;align-items:center;gap:4px;padding:4px 6px;background:var(--card);border:1px solid var(--border);cursor:pointer;transition:background .12s;min-height:22px\}\
+.sb-t:first-child\{border-radius:5px 5px 0 0;border-bottom:.5px solid var(--border)\}\
+.sb-t:last-child\{border-radius:0 0 5px 5px\}\
+.sb-t.picked\{background:rgba(255,107,53,.1);border-color:rgba(255,107,53,.4)\}\
+.sb-t.correct\{background:rgba(46,204,113,.1);border-color:rgba(46,204,113,.4)\}\
+.sb-t.wrong\{background:rgba(231,76,60,.07);opacity:.7\}\
+.sb-t.locked\{cursor:default\}\
+.sb-seed\{font-size:8px;font-weight:800;color:var(--muted);width:12px;flex-shrink:0;text-align:center\}\
+.sb-t.picked .sb-seed\{color:var(--orange)\}\
+.sb-name\{font-size:9px;font-weight:700;color:var(--text);line-height:1.1;flex:1;overflow:hidden;white-space:nowrap;text-overflow:ellipsis\}\
+.sb-name.tbd\{color:var(--muted);font-style:italic;font-weight:400\}\
+.sb-ctr\{display:flex;flex-direction:column;justify-content:center;align-items:center;width:16px;flex-shrink:0;padding-top:20px\}\
+.sb-line\{width:1px;height:100%;background:rgba(255,107,53,.25)\}\
+.pb-card\{background:var(--dark);border-radius:16px;padding:16px;margin:4px 12px 16px;border:1px solid rgba(255,107,53,.3);position:relative;overflow:hidden\}\
+.pb-card::before\{content:'';position:absolute;top:-40px;right:-40px;width:130px;height:130px;border-radius:50%;background:rgba(255,107,53,.06)\}\
+.pb-hdr\{display:flex;align-items:center;gap:8px;margin-bottom:10px;position:relative\}\
+.pb-title\{font-family:'Fredoka One',cursive;font-size:15px;color:var(--orange)\}\
+.pb-badge\{background:rgba(255,107,53,.2);color:var(--orange);font-size:9px;font-weight:800;padding:2px 7px;border-radius:6px;text-transform:uppercase;letter-spacing:.5px\}\
+.pb-text\{font-size:12px;color:rgba(255,255,255,.75);line-height:1.65;white-space:pre-wrap;position:relative\}\
+.lb-hdr\{padding:12px 16px 10px;border-bottom:1px solid var(--border)\}\
+.lb-title\{font-family:'Fredoka One',cursive;font-size:22px;color:var(--text)\}\
+.lb-sub\{font-size:12px;color:var(--tm);margin-top:2px\}\
+.lb-actions\{display:flex;gap:8px;margin-top:10px\}\
+.lb-list\{padding:10px 12px;display:flex;flex-direction:column;gap:6px\}\
+.lb-row\{background:var(--card);border-radius:14px;padding:12px 14px;display:flex;align-items:center;gap:12px;border:1.5px solid var(--border)\}\
+.lb-row.me\{border-color:var(--orange);background:rgba(255,107,53,.03)\}\
+.lb-row.me .lb-name\{color:var(--orange)\}\
+.lb-rank\{font-family:'Fredoka One',cursive;font-size:20px;color:var(--muted);width:28px;text-align:center\}\
+.lb-rank.gold\{color:#F7C948\}.lb-rank.silver\{color:#C0C0C0\}.lb-rank.bronze\{color:#CD7F32\}\
+.lb-info\{flex:1;min-width:0\}\
+.lb-name\{font-weight:800;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis\}\
+.lb-meta\{font-size:11px;color:var(--tm);margin-top:2px\}\
+.lb-right\{text-align:right\}\
+.lb-score\{font-family:'Fredoka One',cursive;font-size:22px;color:var(--orange)\}\
+.lb-max\{font-size:10px;color:var(--tm);margin-top:1px\}\
+.ai-badge\{background:rgba(30,144,255,.1);color:var(--blue);font-size:10px;font-weight:800;padding:2px 6px;border-radius:5px;display:inline-block\}\
+.exp-btn\{flex:1;padding:9px 8px;border-radius:10px;border:1.5px solid var(--border);background:var(--card);font-family:'Nunito',sans-serif;font-size:11px;font-weight:800;color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;transition:all .15s\}\
+.exp-btn:active\{background:#f5f5f5\}\
+.pp\{padding:16px\}\
+.ec\{background:var(--card);border-radius:16px;padding:18px;border:1.5px solid var(--border);margin-bottom:14px;box-shadow:0 2px 10px rgba(0,0,0,.04)\}\
+.et\{font-family:'Fredoka One',cursive;font-size:22px;color:var(--text);margin-bottom:4px\}\
+.es\{font-size:13px;color:var(--tm);margin-bottom:16px;line-height:1.5\}\
+.il\{font-size:11px;font-weight:800;color:var(--tm);text-transform:uppercase;letter-spacing:.6px;margin-bottom:5px\}\
+.ti\{width:100%;padding:12px 14px;border-radius:10px;border:1.5px solid var(--border);font-family:'Nunito',sans-serif;font-size:15px;outline:none;transition:border-color .2s;color:var(--text);background:var(--bg);margin-bottom:12px\}\
+.ti:focus\{border-color:var(--orange);background:#fff\}\
+.pi\{width:100%;padding:12px;border-radius:10px;border:1.5px solid var(--border);font-family:'Fredoka One',cursive;font-size:24px;text-align:center;letter-spacing:8px;outline:none;background:var(--bg);color:var(--text);transition:border-color .2s;margin-bottom:12px\}\
+.pi:focus\{border-color:var(--blue);background:#fff\}\
+.btn\{width:100%;padding:13px;border-radius:12px;font-family:'Fredoka One',cursive;font-size:16px;border:none;cursor:pointer;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:7px\}\
+.btn:active\{transform:scale(.98)\}\
+.btn-o\{background:var(--orange);color:#fff\}\
+.btn-b\{background:var(--blue);color:#fff\}\
+.btn-out\{background:none;border:2px solid var(--orange);color:var(--orange)\}\
+.sg\{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px\}\
+.sb2\{background:#f8f8f6;border-radius:12px;padding:10px 6px;text-align:center\}\
+.sv\{font-family:'Fredoka One',cursive;font-size:20px\}\
+.sl\{font-size:10px;color:#999;margin-top:2px;font-weight:700;text-transform:uppercase;letter-spacing:.4px\}\
+.av\{width:46px;height:46px;border-radius:50%;background:var(--orange);display:flex;align-items:center;justify-content:center;font-family:'Fredoka One',cursive;font-size:19px;color:#fff;flex-shrink:0\}\
+.aw\{background:rgba(30,144,255,.05);border:1.5px solid rgba(30,144,255,.2);border-radius:16px;padding:14px;margin-bottom:14px\}\
+.at\{font-family:'Fredoka One',cursive;font-size:17px;color:var(--blue);margin-bottom:12px\}\
+.arl\{font-family:'Fredoka One',cursive;font-size:14px;color:var(--text);margin:12px 0 6px\}\
+.ag\{background:#fff;border-radius:10px;padding:10px;margin-bottom:7px;border:1px solid var(--border)\}\
+.agm\{font-size:10px;color:#aaa;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px\}\
+.agt\{display:flex;gap:7px;align-items:center\}\
+.atb\{flex:1;padding:8px 5px;border-radius:9px;border:1.5px solid var(--border);background:none;font-family:'Nunito',sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:all .15s;text-align:center;color:var(--text);line-height:1.3\}\
+.atb.winner\{background:var(--green);color:#fff;border-color:var(--green)\}\
+.avs\{font-size:10px;color:var(--muted);font-weight:800;flex-shrink:0\}\
+.lo\{position:fixed;inset:0;background:rgba(26,26,46,.88);display:none;flex-direction:column;align-items:center;justify-content:center;z-index:1000;gap:14px\}\
+.lo.show\{display:flex\}\
+.lb2\{width:50px;height:50px;border-radius:50%;background:var(--orange);animation:bb .55s ease-in-out infinite alternate\}\
+.ls\{width:38px;height:7px;background:rgba(255,107,53,.2);border-radius:50%;animation:sp .55s ease-in-out infinite alternate;margin-top:-6px\}\
+@keyframes bb\{from\{transform:translateY(0) scale(1)\}to\{transform:translateY(-22px) scale(.92)\}\}\
+@keyframes sp\{from\{transform:scaleX(1);opacity:.4\}to\{transform:scaleX(.7);opacity:.2\}\}\
+.lt\{font-family:'Fredoka One',cursive;font-size:17px;color:#fff\}\
+.toast\{position:fixed;bottom:78px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--dark);color:#fff;padding:10px 18px;border-radius:22px;font-size:13px;font-weight:700;z-index:500;opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;white-space:nowrap;box-shadow:0 4px 18px rgba(0,0,0,.25);max-width:calc(100vw - 40px)\}\
+.toast.show\{opacity:1;transform:translateX(-50%) translateY(0)\}\
+.empty\{text-align:center;padding:44px 20px\}\
+.empty-icon\{font-size:44px;margin-bottom:10px\}\
+.empty-text\{font-size:14px;color:var(--tm);line-height:1.5\}\
+</style>\
+</head>\
+<body>\
+<div class="app">\
+  <div class="hdr">\
+    <div class="hdr-top">\
+      <div><div class="hdr-title">\uc0\u55356 \u57280  March Madness 2026</div><div class="hdr-sub">Private Pool \'b7 63 Games \'b7 192 pts max</div></div>\
+      <div class="lock-badge" id="lock-badge">\uc0\u55357 \u56595  Open</div>\
+    </div>\
+    <div class="cd-strip">\
+      <div><div class="cd-label">\uc0\u9201  Picks lock in</div><div class="cd-time" id="cd-time">--:--:--</div></div>\
+      <div class="cd-status" id="cd-status">March 19, 2026 \'b7 12:00 PM</div>\
+    </div>\
+  </div>\
+  <div class="screen" id="screen">\
+    <div class="panel active" id="panel-bracket">\
+      <div class="bracket-toolbar">\
+        <div class="view-toggle">\
+          <button class="vt-btn active" id="vt-r" onclick="setView('r')">Regions</button>\
+          <button class="vt-btn" id="vt-s" onclick="setView('s')">Full</button>\
+        </div>\
+        <div class="ai-wrap" id="ai-wrap">\
+          <button class="ai-btn" id="ai-btn" onclick="toggleAI()">\
+            <span>\uc0\u10024 </span><span class="ai-label" id="ai-label">AI Picks</span><span class="ai-arrow">\u9660 </span>\
+          </button>\
+          <div class="ai-menu" id="ai-menu" style="display:none">\
+            <div class="ai-item" onclick="selStrat('chalk',this)"><span class="si">\uc0\u55357 \u56522 </span><div><div class="sn">Chalk</div><div class="sd">Follow the seeds safely</div></div></div>\
+            <div class="ai-item" onclick="selStrat('chaos',this)"><span class="si">\uc0\u55356 \u57088 </span><div><div class="sn">Chaos</div><div class="sd">Embrace upsets everywhere</div></div></div>\
+            <div class="ai-item" onclick="selStrat('cinderella',this)"><span class="si">\uc0\u55357 \u56416 </span><div><div class="sn">Cinderella</div><div class="sd">One underdog goes deep</div></div></div>\
+            <div class="ai-item" onclick="selStrat('balanced',this)"><span class="si">\uc0\u9878 \u65039 </span><div><div class="sn">Balanced</div><div class="sd">Data-driven mix</div></div></div>\
+            <button class="ai-apply" id="ai-apply" disabled onclick="applyStrat()">Select a strategy above</button>\
+          </div>\
+        </div>\
+      </div>\
+      <div class="prog-wrap"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>\
+      <div id="view-r"><div class="region-list" id="region-list"></div><div class="ff-block" id="ff-block"></div></div>\
+      <div id="view-s" style="display:none"><div class="sbw"><div class="sb" id="sb"></div></div></div>\
+      <div id="pb-area"></div>\
+    </div>\
+    <div class="panel" id="panel-leaderboard">\
+      <div class="lb-hdr">\
+        <div class="lb-title">\uc0\u55356 \u57286  Standings</div>\
+        <div class="lb-sub" id="lb-sub">Live pool standings</div>\
+        <div class="lb-actions">\
+          <button class="exp-btn" onclick="exportCSV()">\uc0\u55357 \u56523  Copy CSV</button>\
+          <button class="exp-btn" onclick="exportTxt()">\uc0\u55357 \u56548  Share Scores</button>\
+        </div>\
+      </div>\
+      <div class="lb-list" id="lb-list"></div>\
+    </div>\
+    <div class="panel" id="panel-profile"><div class="pp" id="pc"></div></div>\
+  </div>\
+  <div class="nav">\
+    <button class="nav-btn active" id="nav-bracket" onclick="showPanel('bracket',this)"><span class="ni">\uc0\u55357 \u56523 </span><span>Bracket</span></button>\
+    <button class="nav-btn" id="nav-leaderboard" onclick="showPanel('leaderboard',this)"><span class="ni">\uc0\u55356 \u57286 </span><span>Standings</span></button>\
+    <button class="nav-btn" id="nav-profile" onclick="showPanel('profile',this)"><span class="ni">\uc0\u55357 \u56420 </span><span>Me</span></button>\
+  </div>\
+</div>\
+<div class="lo" id="lo"><div class="lb2"></div><div class="ls"></div><div class="lt" id="lt">Loading...</div></div>\
+<div class="toast" id="toast"></div>\
+\
+<script>\
+const T=\{south:[\{seed:1,name:"Duke"\},\{seed:16,name:"Iona"\},\{seed:8,name:"Mississippi St."\},\{seed:9,name:"Boise St."\},\{seed:5,name:"Michigan"\},\{seed:12,name:"UC San Diego"\},\{seed:4,name:"Texas A&M"\},\{seed:13,name:"High Point"\},\{seed:6,name:"Missouri"\},\{seed:11,name:"Drake"\},\{seed:3,name:"Iowa St."\},\{seed:14,name:"Lipscomb"\},\{seed:7,name:"Marquette"\},\{seed:10,name:"New Mexico"\},\{seed:2,name:"Alabama"\},\{seed:15,name:"Robert Morris"\}],east:[\{seed:1,name:"Auburn"\},\{seed:16,name:"Alabama St."\},\{seed:8,name:"Louisville"\},\{seed:9,name:"Creighton"\},\{seed:5,name:"Michigan St."\},\{seed:12,name:"UC Irvine"\},\{seed:4,name:"Maryland"\},\{seed:13,name:"Grand Canyon"\},\{seed:6,name:"Illinois"\},\{seed:11,name:"Xavier"\},\{seed:3,name:"Wisconsin"\},\{seed:14,name:"Akron"\},\{seed:7,name:"Gonzaga"\},\{seed:10,name:"Vanderbilt"\},\{seed:2,name:"Tennessee"\},\{seed:15,name:"SIUE"\}],west:[\{seed:1,name:"Florida"\},\{seed:16,name:"Norfolk St."\},\{seed:8,name:"UConn"\},\{seed:9,name:"Oklahoma"\},\{seed:5,name:"Memphis"\},\{seed:12,name:"Colorado St."\},\{seed:4,name:"Texas Tech"\},\{seed:13,name:"UNC Wilmington"\},\{seed:6,name:"BYU"\},\{seed:11,name:"VCU"\},\{seed:3,name:"St. John's"\},\{seed:14,name:"Omaha"\},\{seed:7,name:"UCLA"\},\{seed:10,name:"Utah St."\},\{seed:2,name:"Marquette"\},\{seed:15,name:"Bryant"\}],midwest:[\{seed:1,name:"Houston"\},\{seed:16,name:"Wofford"\},\{seed:8,name:"Gonzaga"\},\{seed:9,name:"Georgia"\},\{seed:5,name:"Clemson"\},\{seed:12,name:"McNeese"\},\{seed:4,name:"Purdue"\},\{seed:13,name:"High Point"\},\{seed:6,name:"Texas"\},\{seed:11,name:"Drake"\},\{seed:3,name:"Kentucky"\},\{seed:14,name:"Troy"\},\{seed:7,name:"UCLA"\},\{seed:10,name:"Arkansas"\},\{seed:2,name:"Kansas"\},\{seed:15,name:"Longwood"\}]\};\
+const REGS=['south','east','west','midwest'];\
+const RC=\{south:'#FF6B35',east:'#1E90FF',west:'#2ECC71',midwest:'#F7C948'\};\
+const RL=\{south:'South',east:'East',west:'West',midwest:'Midwest'\};\
+const RN=["R64","R32","S16","E8"];\
+const ARN=["Round of 64","Round of 32","Sweet 16","Elite Eight","Final Four","Championship"];\
+const PTS=[1,2,4,8,16,32];\
+const PIN="1234";\
+const LD=new Date("2026-03-19T12:00:00");\
+\
+/* FIXED: AI STRATEGIES JSON */\
+const SP=\{\
+  chalk:\{lbl:"\uc0\u55357 \u56522  Chalk",pb:`CHALK STRATEGY \'97 "Don't Get Cute"\\n\\nListen up. Every year, people try to be clever. They pick 13-seeds and end up watching their bracket burn by Saturday. Not us. We're playing the percentages.\\n\\n1-seeds win Round 1 at 99%. Duke, Auburn, Florida, Houston are our pillars. We're allowing ONE upset: UC San Diego over Michigan. 12-seeds beat 5-seeds ~35% of the time. That's our one wild card.\\n\\nFINAL FOUR: Duke vs Auburn, Florida vs Houston\\n\\nCHAMPIONSHIP: Duke vs Houston\\n\\n\u55356 \u57286  CHAMPION: Duke\\n\\nBold call: Duke wins it all without a single scare.`,pk:\{r0_south_0:\{seed:1,name:"Duke"\},r0_south_1:\{seed:8,name:"Mississippi St."\},r0_south_2:\{seed:12,name:"UC San Diego"\},r0_south_3:\{seed:4,name:"Texas A&M"\},r0_south_4:\{seed:6,name:"Missouri"\},r0_south_5:\{seed:3,name:"Iowa St."\},r0_south_6:\{seed:7,name:"Marquette"\},r0_south_7:\{seed:2,name:"Alabama"\},r1_south_0:\{seed:1,name:"Duke"\},r1_south_1:\{seed:4,name:"Texas A&M"\},r1_south_2:\{seed:3,name:"Iowa St."\},r1_south_3:\{seed:2,name:"Alabama"\},r2_south_0:\{seed:1,name:"Duke"\},r2_south_1:\{seed:2,name:"Alabama"\},r3_south_0:\{seed:1,name:"Duke"\},r0_east_0:\{seed:1,name:"Auburn"\},r0_east_1:\{seed:8,name:"Louisville"\},r0_east_2:\{seed:5,name:"Michigan St."\},r0_east_3:\{seed:4,name:"Maryland"\},r0_east_4:\{seed:6,name:"Illinois"\},r0_east_5:\{seed:3,name:"Wisconsin"\},r0_east_6:\{seed:7,name:"Gonzaga"\},r0_east_7:\{seed:2,name:"Tennessee"\},r1_east_0:\{seed:1,name:"Auburn"\},r1_east_1:\{seed:4,name:"Maryland"\},r1_east_2:\{seed:3,name:"Wisconsin"\},r1_east_3:\{seed:2,name:"Tennessee"\},r2_east_0:\{seed:1,name:"Auburn"\},r2_east_1:\{seed:2,name:"Tennessee"\},r3_east_0:\{seed:1,name:"Auburn"\},r0_west_0:\{seed:1,name:"Florida"\},r0_west_1:\{seed:8,name:"UConn"\},r0_west_2:\{seed:5,name:"Memphis"\},r0_west_3:\{seed:4,name:"Texas Tech"\},r0_west_4:\{seed:6,name:"BYU"\},r0_west_5:\{seed:3,name:"St. John's"\},r0_west_6:\{seed:7,name:"UCLA"\},r0_west_7:\{seed:2,name:"Marquette"\},r1_west_0:\{seed:1,name:"Florida"\},r1_west_1:\{seed:4,name:"Texas Tech"\},r1_west_2:\{seed:3,name:"St. John's"\},r1_west_3:\{seed:2,name:"Marquette"\},r2_west_0:\{seed:1,name:"Florida"\},r2_west_1:\{seed:3,name:"St. John's"\},r3_west_0:\{seed:1,name:"Florida"\},r0_midwest_0:\{seed:1,name:"Houston"\},r0_midwest_1:\{seed:8,name:"Gonzaga"\},r0_midwest_2:\{seed:5,name:"Clemson"\},r0_midwest_3:\{seed:4,name:"Purdue"\},r0_midwest_4:\{seed:6,name:"Texas"\},r0_midwest_5:\{seed:3,name:"Kentucky"\},r0_midwest_6:\{seed:7,name:"UCLA"\},r0_midwest_7:\{seed:2,name:"Kansas"\},r1_midwest_0:\{seed:1,name:"Houston"\},r1_midwest_1:\{seed:4,name:"Purdue"\},r1_midwest_2:\{seed:3,name:"Kentucky"\},r1_midwest_3:\{seed:2,name:"Kansas"\},r2_midwest_0:\{seed:1,name:"Houston"\},r2_midwest_1:\{seed:2,name:"Kansas"\},r3_midwest_0:\{seed:1,name:"Houston"\},r4_0:\{seed:1,name:"Duke"\},r4_1:\{seed:1,name:"Houston"\},r5_0:\{seed:1,name:"Duke"\}\}\},\
+  chaos:\{lbl:"\uc0\u55356 \u57088  Chaos",pb:`CHAOS STRATEGY \'97 "Burn It Down"\\n\\nForget everything. Seeds are suggestions. Every year March humiliates the experts \'97 so this year, WE are March.\\n\\nRound one: Boise St. over Mississippi St., UCSD over Michigan, Drake over Missouri, New Mexico over Marquette. Creighton and Xavier crash the East party. Oklahoma and VCU cause carnage in the West.\\n\\nNuclear option: McNeese State. A 12-seed riding to the Elite Eight. Nobody sees it coming.\\n\\nFINAL FOUR: Iowa St. vs Tennessee, VCU vs Kansas\\n\\nCHAMPIONSHIP: Iowa St. vs Tennessee\\n\\n\u55356 \u57286  CHAMPION: Iowa St.\\n\\nBold call: Three 11-seeds or lower reach the Sweet 16. Screenshot this.`,pk:\{r0_south_0:\{seed:1,name:"Duke"\},r0_south_1:\{seed:9,name:"Boise St."\},r0_south_2:\{seed:12,name:"UC San Diego"\},r0_south_3:\{seed:4,name:"Texas A&M"\},r0_south_4:\{seed:11,name:"Drake"\},r0_south_5:\{seed:3,name:"Iowa St."\},r0_south_6:\{seed:10,name:"New Mexico"\},r0_south_7:\{seed:2,name:"Alabama"\},r1_south_0:\{seed:1,name:"Duke"\},r1_south_1:\{seed:12,name:"UC San Diego"\},r1_south_2:\{seed:11,name:"Drake"\},r1_south_3:\{seed:2,name:"Alabama"\},r2_south_0:\{seed:12,name:"UC San Diego"\},r2_south_1:\{seed:3,name:"Iowa St."\},r3_south_0:\{seed:3,name:"Iowa St."\},r0_east_0:\{seed:1,name:"Auburn"\},r0_east_1:\{seed:9,name:"Creighton"\},r0_east_2:\{seed:5,name:"Michigan St."\},r0_east_3:\{seed:4,name:"Maryland"\},r0_east_4:\{seed:11,name:"Xavier"\},r0_east_5:\{seed:3,name:"Wisconsin"\},r0_east_6:\{seed:7,name:"Gonzaga"\},r0_east_7:\{seed:2,name:"Tennessee"\},r1_east_0:\{seed:9,name:"Creighton"\},r1_east_1:\{seed:11,name:"Xavier"\},r1_east_2:\{seed:3,name:"Wisconsin"\},r1_east_3:\{seed:2,name:"Tennessee"\},r2_east_0:\{seed:11,name:"Xavier"\},r2_east_1:\{seed:2,name:"Tennessee"\},r3_east_0:\{seed:2,name:"Tennessee"\},r0_west_0:\{seed:1,name:"Florida"\},r0_west_1:\{seed:9,name:"Oklahoma"\},r0_west_2:\{seed:5,name:"Memphis"\},r0_west_3:\{seed:4,name:"Texas Tech"\},r0_west_4:\{seed:11,name:"VCU"\},r0_west_5:\{seed:3,name:"St. John's"\},r0_west_6:\{seed:7,name:"UCLA"\},r0_west_7:\{seed:2,name:"Marquette"\},r1_west_0:\{seed:9,name:"Oklahoma"\},r1_west_1:\{seed:4,name:"Texas Tech"\},r1_west_2:\{seed:11,name:"VCU"\},r1_west_3:\{seed:7,name:"UCLA"\},r2_west_0:\{seed:9,name:"Oklahoma"\},r2_west_1:\{seed:11,name:"VCU"\},r3_west_0:\{seed:11,name:"VCU"\},r0_midwest_0:\{seed:1,name:"Houston"\},r0_midwest_1:\{seed:8,name:"Gonzaga"\},r0_midwest_2:\{seed:12,name:"McNeese"\},r0_midwest_3:\{seed:4,name:"Purdue"\},r0_midwest_4:\{seed:11,name:"Texas"\},r0_midwest_5:\{seed:3,name:"Kentucky"\},r0_midwest_6:\{seed:10,name:"Arkansas"\},r0_midwest_7:\{seed:2,name:"Kansas"\},r1_midwest_0:\{seed:1,name:"Houston"\},r1_midwest_1:\{seed:12,name:"McNeese"\},r1_midwest_2:\{seed:11,name:"Texas"\},r1_midwest_3:\{seed:2,name:"Kansas"\},r2_midwest_0:\{seed:12,name:"McNeese"\},r2_midwest_1:\{seed:2,name:"Kansas"\},r3_midwest_0:\{seed:2,name:"Kansas"\},r4_0:\{seed:3,name:"Iowa St."\},r4_1:\{seed:2,name:"Kansas"\},r5_0:\{seed:3,name:"Iowa St."\}\}\},\
+  cinderella:\{lbl:"\uc0\u55357 \u56416  Cinderella",pb:`CINDERELLA STRATEGY \'97 "One Glass Slipper"\\n\\nEvery great tournament has a story. This year it belongs to Drake.\\n\\nThe 11-seed Bulldogs are our Cinderella. Their point guard averages 22pts and 8 assists. They press 40 minutes, shoot 38% from three, have ZERO fear.\\n\\nThe run: Drake beats Missouri (R1), upsets Iowa St. (R2), then exhausted Alabama walks into their buzz saw (S16). Drake to the Elite Eight.\\n\\nEverywhere else? Mostly chalk. Duke, Auburn, Florida, Houston all deep.\\n\\nFINAL FOUR: Duke, Auburn, Florida, Houston (Drake falls in E8)\\n\\nCHAMPIONSHIP: Duke vs Houston\\n\\n\u55356 \u57286  CHAMPION: Duke\\n\\nBold call: Drake covers the spread in every game they play.`,pk:\{r0_south_0:\{seed:1,name:"Duke"\},r0_south_1:\{seed:8,name:"Mississippi St."\},r0_south_2:\{seed:5,name:"Michigan"\},r0_south_3:\{seed:4,name:"Texas A&M"\},r0_south_4:\{seed:11,name:"Drake"\},r0_south_5:\{seed:3,name:"Iowa St."\},r0_south_6:\{seed:7,name:"Marquette"\},r0_south_7:\{seed:2,name:"Alabama"\},r1_south_0:\{seed:1,name:"Duke"\},r1_south_1:\{seed:4,name:"Texas A&M"\},r1_south_2:\{seed:11,name:"Drake"\},r1_south_3:\{seed:2,name:"Alabama"\},r2_south_0:\{seed:1,name:"Duke"\},r2_south_1:\{seed:11,name:"Drake"\},r3_south_0:\{seed:1,name:"Duke"\},r0_east_0:\{seed:1,name:"Auburn"\},r0_east_1:\{seed:8,name:"Louisville"\},r0_east_2:\{seed:5,name:"Michigan St."\},r0_east_3:\{seed:4,name:"Maryland"\},r0_east_4:\{seed:6,name:"Illinois"\},r0_east_5:\{seed:3,name:"Wisconsin"\},r0_east_6:\{seed:7,name:"Gonzaga"\},r0_east_7:\{seed:2,name:"Tennessee"\},r1_east_0:\{seed:1,name:"Auburn"\},r1_east_1:\{seed:4,name:"Maryland"\},r1_east_2:\{seed:3,name:"Wisconsin"\},r1_east_3:\{seed:2,name:"Tennessee"\},r2_east_0:\{seed:1,name:"Auburn"\},r2_east_1:\{seed:2,name:"Tennessee"\},r3_east_0:\{seed:1,name:"Auburn"\},r0_west_0:\{seed:1,name:"Florida"\},r0_west_1:\{seed:8,name:"UConn"\},r0_west_2:\{seed:5,name:"Memphis"\},r0_west_3:\{seed:4,name:"Texas Tech"\},r0_west_4:\{seed:6,name:"BYU"\},r0_west_5:\{seed:3,name:"St. John's"\},r0_west_6:\{seed:7,name:"UCLA"\},r0_west_7:\{seed:2,name:"Marquette"\},r1_west_0:\{seed:1,name:"Florida"\},r1_west_1:\{seed:4,name:"Texas Tech"\},r1_west_2:\{seed:3,name:"St. John's"\},r1_west_3:\{seed:2,name:"Marquette"\},r2_west_0:\{seed:1,name:"Florida"\},r2_west_1:\{seed:3,name:"St. John's"\},r3_west_0:\{seed:1,name:"Florida"\},r0_midwest_0:\{seed:1,name:"Houston"\},r0_midwest_1:\{seed:8,name:"Gonzaga"\},r0_midwest_2:\{seed:5,name:"Clemson"\},r0_midwest_3:\{seed:4,name:"Purdue"\},r0_midwest_4:\{seed:6,name:"Texas"\},r0_midwest_5:\{seed:3,name:"Kentucky"\},r0_midwest_6:\{seed:7,name:"UCLA"\},r0_midwest_7:\{seed:2,name:"Kansas"\},r1_midwest_0:\{seed:1,name:"Houston"\},r1_midwest_1:\{seed:4,name:"Purdue"\},r1_midwest_2:\{seed:3,name:"Kentucky"\},r1_midwest_3:\{seed:2,name:"Kansas"\},r2_midwest_0:\{seed:1,name:"Houston"\},r2_midwest_1:\{seed:2,name:"Kansas"\},r3_midwest_0:\{seed:1,name:"Houston"\},r4_0:\{seed:1,name:"Duke"\},r4_1:\{seed:1,name:"Houston"\},r5_0:\{seed:1,name:"Duke"\}\}\},\
+  balanced:\{lbl:"\uc0\u9878 \u65039  Balanced",pb:`BALANCED STRATEGY \'97 "Trust the Numbers"\\n\\n30 years of data: pick favourites mostly, but respect matchups where upsets are historically likely.\\n\\n12-seeds beat 5-seeds 35% of time: UCSD over Michigan. 11-seeds beat 6-seeds 37%: Drake over Missouri, Xavier over Illinois. McNeese over Clemson \'97 another 12-over-5 data pick.\\n\\nAfter Round 1 we firm up. 1-seeds in the Sweet 16 win 83% of the time.\\n\\nFINAL FOUR: Duke vs Auburn, Florida vs Houston\\n\\nCHAMPIONSHIP: Auburn vs Houston \'97 two elite defenses. Ugly. Brilliant.\\n\\n\u55356 \u57286  CHAMPION: Auburn\\n\\nBold call: Every 12-over-5 we picked covers the spread.`,pk:\{r0_south_0:\{seed:1,name:"Duke"\},r0_south_1:\{seed:8,name:"Mississippi St."\},r0_south_2:\{seed:12,name:"UC San Diego"\},r0_south_3:\{seed:4,name:"Texas A&M"\},r0_south_4:\{seed:11,name:"Drake"\},r0_south_5:\{seed:3,name:"Iowa St."\},r0_south_6:\{seed:7,name:"Marquette"\},r0_south_7:\{seed:2,name:"Alabama"\},r1_south_0:\{seed:1,name:"Duke"\},r1_south_1:\{seed:4,name:"Texas A&M"\},r1_south_2:\{seed:3,name:"Iowa St."\},r1_south_3:\{seed:2,name:"Alabama"\},r2_south_0:\{seed:1,name:"Duke"\},r2_south_1:\{seed:2,name:"Alabama"\},r3_south_0:\{seed:1,name:"Duke"\},r0_east_0:\{seed:1,name:"Auburn"\},r0_east_1:\{seed:8,name:"Louisville"\},r0_east_2:\{seed:5,name:"Michigan St."\},r0_east_3:\{seed:4,name:"Maryland"\},r0_east_4:\{seed:11,name:"Xavier"\},r0_east_5:\{seed:3,name:"Wisconsin"\},r0_east_6:\{seed:7,name:"Gonzaga"\},r0_east_7:\{seed:2,name:"Tennessee"\},r1_east_0:\{seed:1,name:"Auburn"\},r1_east_1:\{seed:4,name:"Maryland"\},r1_east_2:\{seed:3,name:"Wisconsin"\},r1_east_3:\{seed:2,name:"Tennessee"\},r2_east_0:\{seed:1,name:"Auburn"\},r2_east_1:\{seed:2,name:"Tennessee"\},r3_east_0:\{seed:1,name:"Auburn"\},r0_west_0:\{seed:1,name:"Florida"\},r0_west_1:\{seed:8,name:"UConn"\},r0_west_2:\{seed:5,name:"Memphis"\},r0_west_3:\{seed:4,name:"Texas Tech"\},r0_west_4:\{seed:6,name:"BYU"\},r0_west_5:\{seed:3,name:"St. John's"\},r0_west_6:\{seed:10,name:"Utah St."\},r0_west_7:\{seed:2,name:"Marquette"\},r1_west_0:\{seed:1,name:"Florida"\},r1_west_1:\{seed:4,name:"Texas Tech"\},r1_west_2:\{seed:3,name:"St. John's"\},r1_west_3:\{seed:2,name:"Marquette"\},r2_west_0:\{seed:1,name:"Florida"\},r2_west_1:\{seed:3,name:"St. John's"\},r3_west_0:\{seed:1,name:"Florida"\},r0_midwest_0:\{seed:1,name:"Houston"\},r0_midwest_1:\{seed:8,name:"Gonzaga"\},r0_midwest_2:\{seed:12,name:"McNeese"\},r0_midwest_3:\{seed:4,name:"Purdue"\},r0_midwest_4:\{seed:6,name:"Texas"\},r0_midwest_5:\{seed:3,name:"Kentucky"\},r0_midwest_6:\{seed:7,name:"UCLA"\},r0_midwest_7:\{seed:2,name:"Kansas"\},r1_midwest_0:\{seed:1,name:"Houston"\},r1_midwest_1:\{seed:4,name:"Purdue"\},r1_midwest_2:\{seed:3,name:"Kentucky"\},r1_midwest_3:\{seed:2,name:"Kansas"\},r2_midwest_0:\{seed:1,name:"Houston"\},r2_midwest_1:\{seed:2,name:"Kansas"\},r3_midwest_0:\{seed:1,name:"Houston"\},r4_0:\{seed:1,name:"Auburn"\},r4_1:\{seed:1,name:"Houston"\},r5_0:\{seed:1,name:"Auburn"\}\}\}\
+\};\
+\
+let S=\{myName:null,myId:null,selStrat:null,pendStrat:null,picks:\{\},pb:null,usedAI:false,results:\{\},adminOK:false,games:[],view:'r',rr:\{south:0,east:0,west:0,midwest:0\},exp:\{south:true,east:false,west:false,midwest:false\}\};\
+\
+function buildGames()\{const g=[];REGS.forEach(reg=>\{const t=T[reg];for(let i=0;i<8;i++)g.push(\{id:`r0_$\{reg\}_$\{i\}`,round:0,region:reg,t1:\{...t[i*2]\},t2:\{...t[i*2+1]\},slot:i\});\});for(let r=1;r<=3;r++)REGS.forEach(reg=>\{const c=Math.pow(2,3-r);for(let i=0;i<c;i++)g.push(\{id:`r$\{r\}_$\{reg\}_$\{i\}`,round:r,region:reg,t1:null,t2:null,slot:i\});\});g.push(\{id:'r4_0',round:4,region:'ff',t1:null,t2:null,slot:0\});g.push(\{id:'r4_1',round:4,region:'ff',t1:null,t2:null,slot:1\});g.push(\{id:'r5_0',round:5,region:'champ',t1:null,t2:null,slot:0\});return g;\}\
+\
+function casc()\{for(let r=1;r<=3;r++)REGS.forEach(reg=>\{const pv=S.games.filter(g=>g.round===r-1&&g.region===reg);const cr=S.games.filter(g=>g.round===r&&g.region===reg);cr.forEach((gm,gi)=>\{gm.t1=pv[gi*2]?(S.picks[pv[gi*2].id]||null):null;gm.t2=pv[gi*2+1]?(S.picks[pv[gi*2+1].id]||null):null;\});\});const r3=REGS.map(reg=>S.games.find(g=>g.round===3&&g.region===reg));const ff=S.games.filter(g=>g.round===4);if(ff[0])\{ff[0].t1=r3[0]?(S.picks[r3[0].id]||null):null;ff[0].t2=r3[1]?(S.picks[r3[1].id]||null):null;\}if(ff[1])\{ff[1].t1=r3[2]?(S.picks[r3[2].id]||null):null;ff[1].t2=r3[3]?(S.picks[r3[3].id]||null):null;\}const ch=S.games.find(g=>g.round===5);if(ch)\{ch.t1=ff[0]?(S.picks[ff[0].id]||null):null;ch.t2=ff[1]?(S.picks[ff[1].id]||null):null;\}\}\
+\
+/* FIXED: Build an independent game tree for actual real-world results */\
+function getActualMatchups()\{\
+  const ag=buildGames();\
+  for(let r=1;r<=3;r++)\{REGS.forEach(reg=>\{const pv=ag.filter(g=>g.round===r-1&&g.region===reg);const cr=ag.filter(g=>g.round===r&&g.region===reg);cr.forEach((gm,gi)=>\{gm.t1=pv[gi*2]?(S.results[pv[gi*2].id]||null):null;gm.t2=pv[gi*2+1]?(S.results[pv[gi*2+1].id]||null):null;\});\});\}\
+  const r3=REGS.map(reg=>ag.find(g=>g.round===3&&g.region===reg));const ff=ag.filter(g=>g.round===4);if(ff[0])\{ff[0].t1=r3[0]?(S.results[r3[0].id]||null):null;ff[0].t2=r3[1]?(S.results[r3[1].id]||null):null;\}if(ff[1])\{ff[1].t1=r3[2]?(S.results[r3[2].id]||null):null;ff[1].t2=r3[3]?(S.results[r3[3].id]||null):null;\}\
+  const ch=ag.find(g=>g.round===5);if(ch)\{ch.t1=ff[0]?(S.results[ff[0].id]||null):null;ch.t2=ff[1]?(S.results[ff[1].id]||null):null;\}\
+  return ag;\
+\}\
+\
+function dc(gid,team)\{const pk=S.picks[gid];const rs=S.results[gid];if(!pk||!team||pk.name!==team.name)return'';if(!rs)return' picked';return rs.name===team.name?' correct':' wrong';\}\
+function dt(gid,team)\{const pk=S.picks[gid];const rs=S.results[gid];if(!pk||!team||pk.name!==team.name)return'';if(!rs)return'\uc0\u10003 ';return rs.name===team.name?'\u10003 ':'\u10007 ';\}\
+function rcc(gid,team,lk)\{const pk=S.picks[gid];const rs=S.results[gid];let c=lk||rs?' locked':'';if(!pk||!team||pk.name!==team.name)return c;if(!rs)return c+' picked';return c+(rs.name===team.name?' correct':' wrong');\}\
+\
+function pick(gid,ti)\{if(!S.myName)\{toast("Enter your name first! \uc0\u55357 \u56420 ");showPanel('profile',document.getElementById('nav-profile'));return;\}if(new Date()>=LD)\{toast("Picks are locked! \u55357 \u56594 ");return;\}const game=S.games.find(g=>g.id===gid);if(!game)return;const team=ti===0?game.t1:game.t2;if(!team)\{toast("Pick earlier rounds first!");return;\}S.picks[gid]=\{...team\};save();casc();renderB();toast(team.name+' \u10003 ');\}\
+\
+function renderRV()\{\
+  const list=document.getElementById('region-list');list.innerHTML='';\
+  REGS.forEach(reg=>\{\
+    const ex=S.exp[reg];const tp=S.games.filter(g=>g.region===reg&&S.picks[g.id]).length;const tg=S.games.filter(g=>g.region===reg&&g.round<=3).length;\
+    const c=document.createElement('div');c.className='region-card'+(ex?' expanded':'');\
+    c.innerHTML=`<div class="rc-head" onclick="toggleR('$\{reg\}')"><div class="rc-color" style="background:$\{RC[reg]\}"></div><div class="rc-name">$\{RL[reg]\}</div><div class="rc-meta">$\{tp\}/$\{tg\}</div><div class="rc-arrow">\uc0\u9660 </div></div><div class="rc-body"><div class="rc-tabs" id="rct-$\{reg\}"></div><div class="rc-games" id="rcg-$\{reg\}"></div></div>`;\
+    list.appendChild(c);if(ex)\{renderRTabs(reg);renderRGames(reg);\}\
+  \});\
+  const ffb=document.getElementById('ff-block');const ff=S.games.filter(g=>g.round===4);const ch=S.games.find(g=>g.round===5);const lk=new Date()>=LD;\
+  let h=`<div class="ff-hdr">\uc0\u55356 \u57286  Final Four + Championship</div><div class="ff-games">`;\
+  [...ff,ch].forEach(game=>\{if(!game)return;const lbl=game.round===4?`FF Game $\{game.slot+1\}`:'Championship';h+=`<div class="rc-game"><div class="rc-ghdr"><span>$\{lbl\}</span><span class="rc-pts">$\{PTS[game.round]\}pt</span></div><div class="rc-team$\{rcc(game.id,game.t1,lk)\}" data-gid="$\{game.id\}" data-ti="0"><div class="rc-seed">$\{game.t1?.seed||'?'\}</div><div class="rc-tname$\{game.t1?'':' tbd'\}">$\{game.t1?.name||'TBD'\}</div><div class="rc-dot$\{dc(game.id,game.t1)\}">$\{dt(game.id,game.t1)\}</div></div><div class="rc-team$\{rcc(game.id,game.t2,lk)\}" data-gid="$\{game.id\}" data-ti="1"><div class="rc-seed">$\{game.t2?.seed||'?'\}</div><div class="rc-tname$\{game.t2?'':' tbd'\}">$\{game.t2?.name||'TBD'\}</div><div class="rc-dot$\{dc(game.id,game.t2)\}">$\{dt(game.id,game.t2)\}</div></div></div>`;\});\
+  h+='</div>';ffb.innerHTML=h;\
+  if(!lk)ffb.querySelectorAll('.rc-team:not(.locked)').forEach(row=>row.addEventListener('click',()=>\{if(!S.results[row.dataset.gid])pick(row.dataset.gid,parseInt(row.dataset.ti));\}));\
+\}\
+function toggleR(reg)\{S.exp[reg]=!S.exp[reg];renderRV();\}\
+function renderRTabs(reg)\{const w=document.getElementById(`rct-$\{reg\}`);if(!w)return;w.innerHTML='';RN.forEach((n,i)=>\{const b=document.createElement('button');b.className='rc-tab'+(i===S.rr[reg]?' active':'');b.textContent=n;b.onclick=()=>\{S.rr[reg]=i;renderRTabs(reg);renderRGames(reg);\};w.appendChild(b);\});\}\
+function renderRGames(reg)\{const w=document.getElementById(`rcg-$\{reg\}`);if(!w)return;const games=S.games.filter(g=>g.round===S.rr[reg]&&g.region===reg);const lk=new Date()>=LD;w.innerHTML='';games.forEach(game=>\{const d=document.createElement('div');d.className='rc-game';d.innerHTML=`<div class="rc-ghdr"><span>$\{RL[reg]\} \'b7 Game $\{game.slot+1\}</span><span class="rc-pts">$\{PTS[game.round]\}pt</span></div><div class="rc-team$\{rcc(game.id,game.t1,lk)\}" data-gid="$\{game.id\}" data-ti="0"><div class="rc-seed">$\{game.t1?.seed||'?'\}</div><div class="rc-tname$\{game.t1?'':' tbd'\}">$\{game.t1?.name||'TBD \'97 pick R64 first'\}</div><div class="rc-dot$\{dc(game.id,game.t1)\}">$\{dt(game.id,game.t1)\}</div></div><div class="rc-team$\{rcc(game.id,game.t2,lk)\}" data-gid="$\{game.id\}" data-ti="1"><div class="rc-seed">$\{game.t2?.seed||'?'\}</div><div class="rc-tname$\{game.t2?'':' tbd'\}">$\{game.t2?.name||'TBD \'97 pick R64 first'\}</div><div class="rc-dot$\{dc(game.id,game.t2)\}">$\{dt(game.id,game.t2)\}</div></div>`;if(!lk&&!S.results[game.id])d.querySelectorAll('.rc-team').forEach(row=>row.addEventListener('click',()=>pick(row.dataset.gid,parseInt(row.dataset.ti))));w.appendChild(d);\});\}\
+\
+function renderSB()\{\
+  const wrap=document.getElementById('sb');wrap.innerHTML='';const lk=new Date()>=LD;\
+  function mkCol(reg,r)\{const col=document.createElement('div');col.className='sb-col';col.innerHTML=`<div class="sb-chdr" style="color:$\{RC[reg]\}99">$\{r===0?RL[reg]:ARN[r]\}</div>`;const games=S.games.filter(g=>g.round===r&&g.region===reg);const sp=Math.pow(2,r);games.forEach(game=>\{const spc=document.createElement('div');spc.style.height=`$\{(sp-1)*28\}px`;col.appendChild(spc);const gd=document.createElement('div');gd.className='sb-game';[game.t1,game.t2].forEach((team,ti)=>\{const row=document.createElement('div');const pk=S.picks[game.id];const rs=S.results[game.id];let cls='sb-t';if(pk&&team&&pk.name===team.name)\{if(!rs)cls+=' picked';else cls+=rs.name===team.name?' correct':' wrong';\}if(lk||rs)cls+=' locked';row.className=cls;row.innerHTML=`<span class="sb-seed">$\{team?.seed||'?'\}</span><span class="sb-name$\{team?'':' tbd'\}">$\{team?.name||'TBD'\}</span>`;if(!lk&&!rs&&team)row.addEventListener('click',()=>pick(game.id,ti));gd.appendChild(row);\});col.appendChild(gd);\});return col;\}\
+  function mkCtr()\{const c=document.createElement('div');c.className='sb-ctr';c.innerHTML='<div class="sb-line"></div>';return c;\}\
+  ['south','east'].forEach(reg=>\{const sec=document.createElement('div');sec.className='sb-sec';for(let r=0;r<=3;r++)sec.appendChild(mkCol(reg,r));sec.appendChild(mkCtr());wrap.appendChild(sec);\});\
+  const mid=document.createElement('div');mid.style.cssText='display:flex;flex-direction:column;justify-content:center;width:150px;flex-shrink:0;padding:20px 4px 0';const ml=document.createElement('div');ml.style.cssText='font-family:Fredoka One,cursive;font-size:10px;color:rgba(255,107,53,.7);text-align:center;margin-bottom:10px;letter-spacing:.5px';ml.textContent='FINAL FOUR & CHAMP';mid.appendChild(ml);\
+  [...S.games.filter(g=>g.round===4),S.games.find(g=>g.round===5)].forEach(game=>\{if(!game)return;const gd=document.createElement('div');gd.className='sb-game';gd.style.margin='6px 4px';[game.t1,game.t2].forEach((team,ti)=>\{const row=document.createElement('div');const pk=S.picks[game.id];const rs=S.results[game.id];let cls='sb-t';if(pk&&team&&pk.name===team.name)\{if(!rs)cls+=' picked';else cls+=rs.name===team.name?' correct':' wrong';\}if(lk||rs)cls+=' locked';row.className=cls;if(game.round===5)row.style.background='rgba(255,107,53,0.06)';row.innerHTML=`<span class="sb-seed">$\{team?.seed||'?'\}</span><span class="sb-name$\{team?'':' tbd'\}">$\{team?.name||'TBD'\}</span>`;if(!lk&&!rs&&team)row.addEventListener('click',()=>pick(game.id,ti));gd.appendChild(row);\});mid.appendChild(gd);\});wrap.appendChild(mid);\
+  ['west','midwest'].forEach(reg=>\{const sec=document.createElement('div');sec.className='sb-sec';sec.appendChild(mkCtr());for(let r=3;r>=0;r--)sec.appendChild(mkCol(reg,r));wrap.appendChild(sec);\});\
+\}\
+\
+function renderB()\{casc();const tp=Object.keys(S.picks).length;document.getElementById('prog-fill').style.width=Math.min(100,Math.round((tp/63)*100))+'%';if(S.view==='r')\{document.getElementById('view-r').style.display='block';document.getElementById('view-s').style.display='none';renderRV();\}else\{document.getElementById('view-r').style.display='none';document.getElementById('view-s').style.display='block';renderSB();\}document.getElementById('pb-area').innerHTML=S.pb?`<div class="pb-card"><div class="pb-hdr"><div class="pb-title">\uc0\u55357 \u56523  Coach's Playbook</div><div class="pb-badge">$\{S.selStrat||'AI'\}</div></div><div class="pb-text">$\{S.pb\}</div></div>`:''; \}\
+function setView(v)\{S.view=v;document.getElementById('vt-r').classList.toggle('active',v==='r');document.getElementById('vt-s').classList.toggle('active',v==='s');renderB();\}\
+function toggleAI()\{const m=document.getElementById('ai-menu');const b=document.getElementById('ai-btn');const o=m.style.display==='none';m.style.display=o?'block':'none';b.classList.toggle('open',o);if(o)setTimeout(()=>document.addEventListener('click',function h(e)\{if(!document.getElementById('ai-wrap').contains(e.target))\{m.style.display='none';b.classList.remove('open');\}document.removeEventListener('click',h);\},100));\}\
+function selStrat(s,el)\{S.pendStrat=s;const d=SP[s];document.getElementById('ai-label').textContent=d.lbl;const ab=document.getElementById('ai-apply');ab.disabled=false;ab.textContent=`Apply $\{d.lbl\}`;document.querySelectorAll('.ai-item').forEach(i=>i.style.background='');el.style.background='rgba(255,107,53,.08)';\}\
+function applyStrat()\{if(!S.myName)\{toast("Enter your name first!");closeAI();showPanel('profile',document.getElementById('nav-profile'));return;\}if(!S.pendStrat||new Date()>=LD)\{toast(new Date()>=LD?"Picks locked!":"Select a strategy");return;\}const d=SP[S.pendStrat];S.picks=\{\};Object.entries(d.pk).forEach(([gid,t])=>\{if(t&&t.name)S.picks[gid]=\{...t\};\});S.pb=d.pb;S.selStrat=S.pendStrat;S.usedAI=true;closeAI();save();renderB();toast(`\uc0\u10024  $\{d.lbl\} picks applied!`);\}\
+function closeAI()\{document.getElementById('ai-menu').style.display='none';document.getElementById('ai-btn').classList.remove('open');\}\
+\
+function renderLB()\{const list=document.getElementById('lb-list');const pts=getAll();if(!pts.length)\{list.innerHTML='<div class="empty"><div class="empty-icon">\uc0\u55357 \u56384 </div><div class="empty-text">No participants yet.</div></div>';return;\}const sc=pts.map(p=>(\{...p,score:calcScore(p.picks||\{\}),max:calcMax(p.picks||\{\})\})).sort((a,b)=>b.score-a.score||b.max-a.max);list.innerHTML='';sc.forEach((p,i)=>\{const im=p.id===S.myId;const rc2=i===0?' gold':i===1?' silver':i===2?' bronze':'';const rd=i===0?'\u55358 \u56647 ':i===1?'\u55358 \u56648 ':i===2?'\u55358 \u56649 ':i+1;const row=document.createElement('div');row.className='lb-row'+(im?' me':'');row.innerHTML=`<div class="lb-rank$\{rc2\}">$\{rd\}</div><div class="lb-info"><div class="lb-name">$\{p.name\}$\{im?' (you)':''\}</div><div class="lb-meta">$\{Object.keys(p.picks||\{\}).length\}/63 picks $\{p.usedAI?'&nbsp;<span class="ai-badge">AI</span>':''\}</div></div><div class="lb-right"><div class="lb-score">$\{p.score\}</div><div class="lb-max">max $\{p.max\}</div></div>`;list.appendChild(row);\});const gs=Object.keys(S.results).length;document.getElementById('lb-sub').textContent=`$\{gs\} game$\{gs!==1?'s':''\} scored \'b7 $\{sc.length\} player$\{sc.length!==1?'s':''\}`;\}\
+function exportCSV()\{const pts=getAll();if(!pts.length)\{toast("No participants yet!");return;\}const sc=pts.map(p=>(\{...p,score:calcScore(p.picks||\{\}),max:calcMax(p.picks||\{\})\})).sort((a,b)=>b.score-a.score);let csv='Rank,Name,Score,Max Possible,Picks Made,Strategy\\n';sc.forEach((p,i)=>csv+=`$\{i+1\},"$\{p.name\}",$\{p.score\},$\{p.max\},$\{Object.keys(p.picks||\{\}).length\}/63,$\{p.usedAI?(p.selStrat||'AI'):'Manual'\}\\n`);copyTxt(csv,"\uc0\u55357 \u56523  CSV copied! Paste into Google Sheets");\}\
+function exportTxt()\{const pts=getAll();if(!pts.length)\{toast("No participants yet!");return;\}const sc=pts.map(p=>(\{...p,score:calcScore(p.picks||\{\})\})).sort((a,b)=>b.score-a.score);const m=['\uc0\u55358 \u56647 ','\u55358 \u56648 ','\u55358 \u56649 '];let txt='\u55356 \u57280  March Madness 2026 Standings\\n\\n';sc.forEach((p,i)=>txt+=`$\{m[i]||i+1+'.'\} $\{p.name\} \'97 $\{p.score\} pts\\n`);txt+=`\\nGames scored: $\{Object.keys(S.results).length\}/63`;copyTxt(txt,"\u55357 \u56548  Copied! Paste to group chat");\}\
+function copyTxt(txt,msg)\{try\{navigator.clipboard.writeText(txt).then(()=>toast(msg)).catch(()=>fbCopy(txt,msg));\}catch(e)\{fbCopy(txt,msg);\}\}\
+function fbCopy(txt,msg)\{const ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();try\{document.execCommand('copy');toast(msg);\}catch(e)\{toast("Copy failed \'97 try desktop");\}document.body.removeChild(ta);\}\
+\
+/* FIXED: Identify eliminated teams based on live tournament results */\
+function getDeadTeams()\{\
+  const dead=new Set();\
+  const ag=getActualMatchups();\
+  ag.forEach(g=>\{\
+    if(S.results[g.id])\{\
+      const w=S.results[g.id].name;\
+      if(g.t1&&g.t1.name!==w) dead.add(g.t1.name);\
+      if(g.t2&&g.t2.name!==w) dead.add(g.t2.name);\
+    \}\
+  \});\
+  return dead;\
+\}\
+\
+function calcScore(picks)\{let s=0;Object.entries(picks).forEach(([gid,t])=>\{const rs=S.results[gid];if(rs&&rs.name===t.name)\{const g=S.games.find(g=>g.id===gid);if(g)s+=PTS[g.round];\}\});return s;\}\
+\
+/* FIXED: Calculate Max Score tracking eliminated teams */\
+function calcMax(picks)\{\
+  let m=calcScore(picks);\
+  const dead=getDeadTeams();\
+  Object.entries(picks).forEach(([gid,t])=>\{\
+    if(!S.results[gid] && !dead.has(t.name))\{\
+      const g=S.games.find(g=>g.id===gid);\
+      if(g) m+=PTS[g.round];\
+    \}\
+  \});\
+  return m;\
+\}\
+\
+function getAll()\{const all=[];if(S.myName&&S.myId)all.push(\{id:S.myId,name:S.myName,picks:S.picks,usedAI:S.usedAI,selStrat:S.selStrat\});(S.others||[]).forEach(p=>\{if(p.id!==S.myId)all.push(p);\});return all;\}\
+\
+function renderProfile()\{const c=document.getElementById('pc');\
+  if(!S.myName)\{c.innerHTML=`<div class="ec"><div class="et">\uc0\u55357 \u56395  Join the Pool</div><div class="es">Enter your name to start making picks. No account needed.</div><div class="il">Your Name</div><input class="ti" id="ni" type="text" placeholder="e.g. Jamie, The Commissioner..." maxlength="24"/><button class="btn btn-o" onclick="saveName()">Let's Go! \u55356 \u57280 </button></div><div class="ec" style="border-color:rgba(30,144,255,.25);background:rgba(30,144,255,.02)"><div style="font-family:'Fredoka One',cursive;font-size:18px;color:var(--blue);margin-bottom:4px">\u55357 \u56592  Admin Panel</div><div style="font-size:12px;color:var(--tm);margin-bottom:14px">Enter game results and manage the pool</div><div class="il">Admin PIN</div><input class="pi" id="apinput" type="password" placeholder="\'95\'95\'95\'95" maxlength="4"/><button class="btn btn-b" onclick="checkPin()">Unlock Admin</button></div>`;\
+  document.getElementById('ni')?.addEventListener('keydown',e=>\{if(e.key==='Enter')saveName();\});document.getElementById('apinput')?.addEventListener('keydown',e=>\{if(e.key==='Enter')checkPin();\});return;\}\
+  const ms=calcScore(S.picks);const mm=calcMax(S.picks);const pc=Object.keys(S.picks).length;const rank=getAll().map(p=>(\{...p,s:calcScore(p.picks||\{\})\})).sort((a,b)=>b.s-a.s).findIndex(p=>p.id===S.myId)+1;\
+  c.innerHTML=`<div class="ec"><div style="display:flex;align-items:center;gap:12px;margin-bottom:14px"><div class="av">$\{S.myName[0].toUpperCase()\}</div><div style="flex:1;min-width:0"><div style="font-family:'Fredoka One',cursive;font-size:19px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">$\{S.myName\}</div><div style="font-size:12px;color:var(--tm);margin-top:2px">$\{S.usedAI?'\uc0\u55358 \u56598  '+(S.selStrat||'AI')+' strategy':'\u9997 \u65039  Manual picks'\}</div></div><button class="btn btn-out" style="font-size:11px;padding:6px 10px;width:auto;font-family:'Nunito',sans-serif" onclick="resetName()">Edit</button></div><div class="sg"><div class="sb2"><div class="sv" style="color:var(--orange)">$\{ms\}</div><div class="sl">Score</div></div><div class="sb2"><div class="sv" style="color:var(--blue)">$\{mm\}</div><div class="sl">Max</div></div><div class="sb2"><div class="sv" style="color:var(--tm)">$\{rank>0?'#'+rank:'\'97'\}</div><div class="sl">Rank</div></div></div><div style="background:#f8f8f6;border-radius:10px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:13px;color:var(--tm)">Picks filled</span><span style="font-weight:800;font-size:13px">$\{pc\}/63</span></div></div>$\{S.adminOK?buildAdmin():`<div class="ec" style="border-color:rgba(30,144,255,.2);background:rgba(30,144,255,.02)"><div style="font-family:'Fredoka One',cursive;font-size:18px;color:var(--blue);margin-bottom:4px">\u55357 \u56592  Admin Panel</div><div style="font-size:12px;color:var(--tm);margin-bottom:14px">Enter results for completed games</div><div class="il">Admin PIN</div><input class="pi" id="apinput" type="password" placeholder="\'95\'95\'95\'95" maxlength="4"/><button class="btn btn-b" onclick="checkPin()">Unlock Admin</button></div>`\}`;\
+  document.getElementById('apinput')?.addEventListener('keydown',e=>\{if(e.key==='Enter')checkPin();\});\}\
+\
+/* FIXED: Admin logic now uses getActualMatchups() instead of user's S.games */\
+function buildAdmin()\{\
+  let h=`<div class="aw"><div class="at">\uc0\u9881 \u65039  Admin \'97 Enter Results</div>`;\
+  const ag=getActualMatchups();\
+  for(let r=0;r<6;r++)\{\
+    const pl=ag.filter(g=>g.round===r&&g.t1&&g.t2);\
+    if(!pl.length)continue;\
+    h+=`<div class="arl">$\{ARN[r]\}</div>`;\
+    pl.forEach(game=>\{\
+      const rs=S.results[game.id];\
+      const rl=game.region==='ff'?'Final Four':game.region==='champ'?'Championship':RL[game.region]||game.region;\
+      h+=`<div class="ag"><div class="agm">$\{rl\} \'b7 Game $\{game.slot+1\}</div><div class="agt"><button class="atb$\{rs&&rs.name===game.t1.name?' winner':''\}" onclick="setRes('$\{game.id\}',0)">($\{game.t1.seed\}) $\{game.t1.name\}</button><div class="avs">vs</div><button class="atb$\{rs&&rs.name===game.t2.name?' winner':''\}" onclick="setRes('$\{game.id\}',1)">($\{game.t2.seed\}) $\{game.t2.name\}</button></div></div>`;\
+    \});\
+  \}\
+  return h+'</div>';\
+\}\
+\
+function setRes(gid,ti)\{const ag=getActualMatchups();const game=ag.find(g=>g.id===gid);if(!game)return;const team=ti===0?game.t1:game.t2;if(!team)return;if(S.results[gid]&&S.results[gid].name===team.name)\{delete S.results[gid];toast('Result cleared');\}else\{S.results[gid]=\{...team\};toast(`\uc0\u9989  $\{team.name\} wins!`);\}save();renderProfile();if(document.getElementById('panel-bracket').classList.contains('active'))renderB();if(document.getElementById('panel-leaderboard').classList.contains('active'))renderLB();\}\
+function checkPin()\{const i=document.getElementById('apinput');if(i&&i.value===PIN)\{S.adminOK=true;toast("Admin unlocked! \uc0\u55357 \u56595 ");renderProfile();\}else\{toast("Wrong PIN");if(i)\{i.value='';i.focus();\}\}\}\
+function saveName()\{const i=document.getElementById('ni');const n=i?.value?.trim();if(!n)\{toast("Enter a name!");return;\}S.myName=n;if(!S.myId)S.myId='p_'+Date.now().toString(36)+Math.random().toString(36).substr(2,4);save();renderProfile();showPanel('bracket',document.getElementById('nav-bracket'));toast(`Welcome, $\{n\}! \uc0\u55356 \u57280 `);\}\
+function resetName()\{if(confirm(`Change name from "$\{S.myName\}"?`))\{S.myName=null;renderProfile();\}\}\
+\
+function showPanel(name,btn)\{document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));document.getElementById('panel-'+name).classList.add('active');btn.classList.add('active');document.getElementById('screen').scrollTop=0;closeAI();if(name==='bracket')renderB();else if(name==='leaderboard')renderLB();else if(name==='profile')renderProfile();\}\
+\
+function updateCD()\{const diff=LD-new Date();const badge=document.getElementById('lock-badge');if(diff<=0)\{document.getElementById('cd-time').textContent='LOCKED';document.getElementById('cd-status').textContent='No more changes allowed';if(badge)\{badge.textContent='\uc0\u55357 \u56594  Locked';badge.style.color='#ff6b35';\}return;\}const h=Math.floor(diff/3600000),m=Math.floor((diff%3600000)/60000),s=Math.floor((diff%60000)/1000);document.getElementById('cd-time').textContent=`$\{String(h).padStart(2,'0')\}:$\{String(m).padStart(2,'0')\}:$\{String(s).padStart(2,'0')\}`;if(diff<3600000)document.getElementById('cd-time').style.color='#ff6b35';\}\
+\
+let tt;function toast(msg)\{const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),2400);\}\
+function save()\{try\{localStorage.setItem('mmb26',JSON.stringify(\{myName:S.myName,myId:S.myId,picks:S.picks,pb:S.pb,usedAI:S.usedAI,selStrat:S.selStrat,results:S.results,others:S.others||[],view:S.view,rr:S.rr,exp:S.exp\}));\}catch(e)\{\}\}\
+function load()\{try\{const s=localStorage.getItem('mmb26');if(s)Object.assign(S,JSON.parse(s));\}catch(e)\{\}\}\
+\
+function init()\{S.games=buildGames();load();casc();renderB();updateCD();setInterval(updateCD,1000);\}\
+init();\
+</script>\
+</body>\
+</html>}
